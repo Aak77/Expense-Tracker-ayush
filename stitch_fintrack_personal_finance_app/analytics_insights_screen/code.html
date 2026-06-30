@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FinTrack Analytics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed": "#dfe2f3",
+                    "surface-container-high": "#1c2b3c",
+                    "tertiary-container": "#8d90a0",
+                    "on-primary-fixed-variant": "#004492",
+                    "secondary-fixed": "#a7eeff",
+                    "outline": "#8c909e",
+                    "outline-variant": "#424753",
+                    "error-container": "#93000a",
+                    "on-secondary-fixed-variant": "#004e5b",
+                    "on-secondary-container": "#004b57",
+                    "primary-container": "#508ff8",
+                    "on-error": "#690005",
+                    "on-tertiary": "#2c303d",
+                    "surface-variant": "#273647",
+                    "on-surface": "#d4e4fa",
+                    "on-secondary": "#00363f",
+                    "tertiary-fixed-dim": "#c3c6d7",
+                    "surface-container-low": "#0d1c2d",
+                    "surface-tint": "#acc7ff",
+                    "secondary-container": "#00c2de",
+                    "on-surface-variant": "#c2c6d5",
+                    "on-primary": "#002f68",
+                    "on-primary-container": "#00285b",
+                    "surface-container-highest": "#273647",
+                    "surface-container": "#122131",
+                    "tertiary": "#c3c6d7",
+                    "primary": "#acc7ff",
+                    "surface-bright": "#2c3a4c",
+                    "primary-fixed": "#d7e2ff",
+                    "secondary-fixed-dim": "#3ad8f5",
+                    "on-secondary-fixed": "#001f25",
+                    "surface": "#051424",
+                    "inverse-on-surface": "#233143",
+                    "secondary": "#43defb",
+                    "inverse-surface": "#d4e4fa",
+                    "on-tertiary-fixed-variant": "#434654",
+                    "on-error-container": "#ffdad6",
+                    "on-background": "#d4e4fa",
+                    "on-tertiary-container": "#252936",
+                    "surface-dim": "#051424",
+                    "primary-fixed-dim": "#acc7ff",
+                    "surface-container-lowest": "#010f1f",
+                    "on-tertiary-fixed": "#171b28",
+                    "on-primary-fixed": "#001a40",
+                    "background": "#051424",
+                    "inverse-primary": "#005bbf",
+                    "error": "#ffb4ab"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "sm": "8px",
+                    "base": "4px",
+                    "xs": "4px",
+                    "container-padding": "20px",
+                    "md": "16px",
+                    "xl": "32px",
+                    "lg": "24px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "display-currency": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "display-currency": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-image: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(79,142,247,0.05) 100%) 1;
+        }
+        .chart-gradient-blue { fill: url(#blueGrad); }
+        .chart-gradient-purple { fill: url(#purpleGrad); }
+        .chart-gradient-teal { fill: url(#tealGrad); }
+        .chart-gradient-orange { fill: url(#orangeGrad); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-24 selection:bg-primary-container/30">
+<!-- Top App Bar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-padding h-16 bg-surface/80 dark:bg-surface/80 backdrop-blur-xl border-b border-white/10">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden border border-white/10">
+<img alt="Profile" class="w-full h-full object-cover" data-alt="A high-end professional headshot of a person with a neutral, confident expression. The lighting is dramatic with soft blue rim light against a deep navy studio background, maintaining a corporate modern aesthetic with high contrast and sharp focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuACj_yIUB3qNYITMe9kyCGTU-ShWCHrucBWpRbIb0sQvM7XEx-ifC58-Qn2zw8H6VkEovsJ8ZZRRjTht_S8buqifA01es_JP9y0cdmQYFbEXwVJrwZ4FfvUfKMJtqBHtNEO3XlsgHG3hdUSlkKrdTY_Xho8qcz2zFLkIfbekKYZE_75pSYMT5OetNtjfRj6Jf7QGZ5UZCBleupkGeqAtbNBtg6GMn7hXiukKvMmdYWx4wDL1SrFWtddN47Pk2gnXedKGhJy3hXecg-M"/>
+</div>
+<h1 class="text-headline-md font-headline-md font-bold text-primary dark:text-primary">FinTrack</h1>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/5 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined text-primary">notifications</span>
+</button>
+</header>
+<main class="pt-24 px-container-padding max-w-5xl mx-auto space-y-lg">
+<!-- Month Selector -->
+<section class="flex items-center justify-between glass-card rounded-xl px-md py-sm">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/5 transition-colors active:scale-90">
+<span class="material-symbols-outlined text-outline">chevron_left</span>
+</button>
+<div class="text-center">
+<h2 class="font-headline-md text-headline-md text-on-surface">June 2026</h2>
+<p class="font-label-sm text-label-sm text-outline uppercase tracking-widest">Analytics Overview</p>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/5 transition-colors active:scale-90">
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</button>
+</section>
+<!-- Bento Grid Insights -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-md">
+<!-- Donut Chart: Expense Breakdown -->
+<div class="md:col-span-5 glass-card rounded-xl p-md flex flex-col items-center justify-center space-y-md h-[400px]">
+<div class="w-full flex justify-between items-start">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Breakdown</h3>
+<p class="font-label-md text-label-md text-outline">Monthly Distribution</p>
+</div>
+<span class="material-symbols-outlined text-secondary">pie_chart</span>
+</div>
+<div class="relative w-48 h-48">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 36 36">
+<circle cx="18" cy="18" fill="transparent" r="15.915" stroke="rgba(255,255,255,0.05)" stroke-width="3.5"></circle>
+<!-- Blue: Housing 40% -->
+<circle class="transition-all duration-1000" cx="18" cy="18" fill="transparent" r="15.915" stroke="#4F8EF7" stroke-dasharray="40 60" stroke-dashoffset="25" stroke-width="3.8"></circle>
+<!-- Purple: Food 25% -->
+<circle class="transition-all duration-1000" cx="18" cy="18" fill="transparent" r="15.915" stroke="#9333ea" stroke-dasharray="25 75" stroke-dashoffset="-15" stroke-width="3.8"></circle>
+<!-- Teal: Transit 20% -->
+<circle class="transition-all duration-1000" cx="18" cy="18" fill="transparent" r="15.915" stroke="#2dd4bf" stroke-dasharray="20 80" stroke-dashoffset="-40" stroke-width="3.8"></circle>
+<!-- Orange: Fun 15% -->
+<circle class="transition-all duration-1000" cx="18" cy="18" fill="transparent" r="15.915" stroke="#fb923c" stroke-dasharray="15 85" stroke-dashoffset="-60" stroke-width="3.8"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="font-display-currency text-display-currency text-on-surface">₹42k</span>
+<span class="font-label-sm text-label-sm text-outline">TOTAL</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-x-8 gap-y-2 w-full pt-md">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-[#4F8EF7]"></div>
+<span class="font-label-md text-label-md text-on-surface-variant">Housing</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-[#9333ea]"></div>
+<span class="font-label-md text-label-md text-on-surface-variant">Dining</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-[#2dd4bf]"></div>
+<span class="font-label-md text-label-md text-on-surface-variant">Transit</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-[#fb923c]"></div>
+<span class="font-label-md text-label-md text-on-surface-variant">Lifestyle</span>
+</div>
+</div>
+</div>
+<!-- Line Chart: Spending Trend -->
+<div class="md:col-span-7 glass-card rounded-xl p-md space-y-md h-[400px] flex flex-col">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Spending Trend</h3>
+<p class="font-label-md text-label-md text-outline">Last 6 Months Analysis</p>
+</div>
+<div class="flex items-center gap-2 bg-surface-container rounded-lg p-1">
+<button class="px-3 py-1 rounded-md text-label-sm font-label-sm bg-primary-container text-on-primary-container">Trends</button>
+<button class="px-3 py-1 rounded-md text-label-sm font-label-sm text-outline hover:text-on-surface transition-colors">Net</button>
+</div>
+</div>
+<div class="flex-grow w-full pt-md relative">
+<svg class="w-full h-full" viewbox="0 0 400 200">
+<defs>
+<lineargradient id="lineGrad" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#4F8EF7" stop-opacity="0.3"></stop>
+<stop offset="100%" stop-color="#4F8EF7" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<!-- Grid Lines -->
+<line stroke="white" stroke-opacity="0.05" x1="0" x2="400" y1="40" y2="40"></line>
+<line stroke="white" stroke-opacity="0.05" x1="0" x2="400" y1="80" y2="80"></line>
+<line stroke="white" stroke-opacity="0.05" x1="0" x2="400" y1="120" y2="120"></line>
+<line stroke="white" stroke-opacity="0.05" x1="0" x2="400" y1="160" y2="160"></line>
+<!-- Area Fill -->
+<path d="M0,160 L40,140 L120,150 L200,100 L280,120 L360,60 L400,70 L400,200 L0,200 Z" fill="url(#lineGrad)"></path>
+<!-- The Line -->
+<path d="M0,160 Q40,140 80,145 T160,130 T240,110 T320,70 T400,75" fill="none" stroke="#4F8EF7" stroke-linecap="round" stroke-width="3"></path>
+<!-- Data Points -->
+<circle cx="320" cy="70" fill="#4F8EF7" r="4"></circle>
+<circle cx="320" cy="70" fill="#4F8EF7" fill-opacity="0.2" r="10"></circle>
+</svg>
+<!-- X-Axis Labels -->
+<div class="flex justify-between w-full pt-4">
+<span class="text-label-sm font-label-sm text-outline">JAN</span>
+<span class="text-label-sm font-label-sm text-outline">FEB</span>
+<span class="text-label-sm font-label-sm text-outline">MAR</span>
+<span class="text-label-sm font-label-sm text-outline">APR</span>
+<span class="text-label-sm font-label-sm text-outline">MAY</span>
+<span class="text-label-sm font-label-sm text-primary font-bold">JUN</span>
+</div>
+</div>
+</div>
+<!-- Bar Chart: Category Comparison -->
+<div class="md:col-span-12 glass-card rounded-xl p-md space-y-xl">
+<div class="flex justify-between items-center">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Category Comparison</h3>
+<p class="font-label-md text-label-md text-outline">Budget vs. Actual Spending</p>
+</div>
+<span class="material-symbols-outlined text-outline">query_stats</span>
+</div>
+<div class="space-y-lg">
+<!-- Category 1: Housing -->
+<div class="space-y-sm">
+<div class="flex justify-between items-center">
+<span class="font-label-md text-label-md text-on-surface">Housing &amp; Utilities</span>
+<span class="font-label-md text-label-md text-on-surface">₹18,200 <span class="text-outline">/ ₹20k</span></span>
+</div>
+<div class="h-3 w-full bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-secondary rounded-full" style="width: 91%"></div>
+</div>
+</div>
+<!-- Category 2: Food -->
+<div class="space-y-sm">
+<div class="flex justify-between items-center">
+<span class="font-label-md text-label-md text-on-surface">Food &amp; Dining</span>
+<span class="font-label-md text-label-md text-error">₹12,450 <span class="text-outline">/ ₹10k</span></span>
+</div>
+<div class="h-3 w-full bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full" style="width: 100%"></div>
+</div>
+</div>
+<!-- Category 3: Transport -->
+<div class="space-y-sm">
+<div class="flex justify-between items-center">
+<span class="font-label-md text-label-md text-on-surface">Transportation</span>
+<span class="font-label-md text-label-md text-on-surface">₹4,800 <span class="text-outline">/ ₹6k</span></span>
+</div>
+<div class="h-3 w-full bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full" style="width: 80%"></div>
+</div>
+</div>
+<!-- Category 4: Shopping -->
+<div class="space-y-sm">
+<div class="flex justify-between items-center">
+<span class="font-label-md text-label-md text-on-surface">Shopping</span>
+<span class="font-label-md text-label-md text-on-surface">₹6,550 <span class="text-outline">/ ₹8k</span></span>
+</div>
+<div class="h-3 w-full bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-orange-500 to-yellow-500 rounded-full" style="width: 72%"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pt-3 pb-safe bg-surface/80 dark:bg-surface/80 backdrop-blur-2xl border-t border-white/10">
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline hover:text-primary-container transition-all" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-label-sm font-label-sm">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary dark:text-secondary scale-110 duration-300 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
+<span class="text-label-sm font-label-sm">Activity</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline hover:text-primary-container transition-all" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="text-label-sm font-label-sm">Budget</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline hover:text-primary-container transition-all" href="#">
+<span class="material-symbols-outlined">ads_click</span>
+<span class="text-label-sm font-label-sm">Goals</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline hover:text-primary-container transition-all" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-label-sm font-label-sm">Profile</span>
+</a>
+</nav>
+<script>
+        // Simple entry animations for the glass cards
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.glass-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = `all 0.5s ease-out ${index * 0.1}s`;
+                
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100);
+            });
+        });
+    </script>
+</body></html>

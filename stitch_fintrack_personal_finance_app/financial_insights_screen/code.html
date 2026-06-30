@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Financial Insights | FinTrack</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed": "#dfe2f3",
+                    "surface-container-high": "#1c2b3c",
+                    "tertiary-container": "#8d90a0",
+                    "on-primary-fixed-variant": "#004492",
+                    "secondary-fixed": "#a7eeff",
+                    "outline": "#8c909e",
+                    "outline-variant": "#424753",
+                    "error-container": "#93000a",
+                    "on-secondary-fixed-variant": "#004e5b",
+                    "on-secondary-container": "#004b57",
+                    "primary-container": "#508ff8",
+                    "on-error": "#690005",
+                    "on-tertiary": "#2c303d",
+                    "surface-variant": "#273647",
+                    "on-surface": "#d4e4fa",
+                    "on-secondary": "#00363f",
+                    "tertiary-fixed-dim": "#c3c6d7",
+                    "surface-container-low": "#0d1c2d",
+                    "surface-tint": "#acc7ff",
+                    "secondary-container": "#00c2de",
+                    "on-surface-variant": "#c2c6d5",
+                    "on-primary": "#002f68",
+                    "on-primary-container": "#00285b",
+                    "surface-container-highest": "#273647",
+                    "surface-container": "#122131",
+                    "tertiary": "#c3c6d7",
+                    "primary": "#acc7ff",
+                    "surface-bright": "#2c3a4c",
+                    "primary-fixed": "#d7e2ff",
+                    "secondary-fixed-dim": "#3ad8f5",
+                    "on-secondary-fixed": "#001f25",
+                    "surface": "#051424",
+                    "inverse-on-surface": "#233143",
+                    "secondary": "#43defb",
+                    "inverse-surface": "#d4e4fa",
+                    "on-tertiary-fixed-variant": "#434654",
+                    "on-error-container": "#ffdad6",
+                    "on-background": "#d4e4fa",
+                    "on-tertiary-container": "#252936",
+                    "surface-dim": "#051424",
+                    "primary-fixed-dim": "#acc7ff",
+                    "surface-container-lowest": "#010f1f",
+                    "on-tertiary-fixed": "#171b28",
+                    "on-primary-fixed": "#001a40",
+                    "background": "#051424",
+                    "inverse-primary": "#005bbf",
+                    "error": "#ffb4ab"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "sm": "8px",
+                    "base": "4px",
+                    "xs": "4px",
+                    "container-padding": "20px",
+                    "md": "16px",
+                    "xl": "32px",
+                    "lg": "24px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "display-currency": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "display-currency": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #051424;
+            color: #d4e4fa;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:active {
+            transform: scale(0.98);
+        }
+        .insight-border-orange { border-left: 4px solid #f97316; }
+        .insight-border-green { border-left: 4px solid #10b981; }
+        .insight-border-blue { border-left: 4px solid #3b82f6; }
+        
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+
+        /* Subtle ambient glow animation */
+        @keyframes glow {
+            0% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+            100% { opacity: 0.3; }
+        }
+        .ambient-glow {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(80, 143, 248, 0.15) 0%, rgba(80, 143, 248, 0) 70%);
+            border-radius: 50%;
+            z-index: -1;
+            animation: glow 8s infinite ease-in-out;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-body-md pb-32">
+<!-- Ambient Accents -->
+<div class="ambient-glow top-[-100px] left-[-100px]"></div>
+<div class="ambient-glow bottom-[10%] right-[-50px]" style="animation-delay: -4s;"></div>
+<!-- Top App Bar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-padding h-16 bg-surface/80 dark:bg-surface/80 backdrop-blur-xl border-b border-white/10">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="A professional and clean headshot of a young male professional with a friendly smile, set against a blurred modern office background. The lighting is soft and natural, emphasizing a high-end corporate tech aesthetic. The overall color palette is muted with soft blues and grays, perfectly complementing a premium financial application's interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuASOUasih3O6721h0_lxs1QGQrnZqJNRY1k3ArVh7DFVJ21KJYowpD5QCkYKj6VWdqimU1ilL3isyLqkBiTwjr9mYEs5cgJ65RX7MadkF7E7zNVmkAu3k6ih6no4OA_Oj_DFOMlnaaMW940AivU-Dw8DNsxcogT8k_MP3VfzZC67r7NrnVFC4jUpmRM-XglGjkCQ_PjI2V7ybnuXx0jOrhBpj2frKpdz6x0HCP-w2Jd7Tw3SdVhwU4kppglnz3YYCqRGyxqlCAUj1jW"/>
+</div>
+<h1 class="text-headline-md font-headline-md font-bold text-primary dark:text-primary">FinTrack</h1>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/5 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined text-primary">notifications</span>
+</button>
+</header>
+<main class="mt-20 px-container-padding space-y-lg">
+<!-- Header Section -->
+<section class="space-y-xs">
+<h2 class="text-headline-lg-mobile font-headline-lg-mobile text-on-surface">AI Insights</h2>
+<p class="text-label-md font-label-md text-on-surface-variant">Your personalized financial health report for October.</p>
+</section>
+<!-- Insights Feed -->
+<div class="space-y-md">
+<!-- Insight 1: Spending Increase (Warning - Orange) -->
+<div class="glass-card insight-border-orange p-container-padding rounded-xl flex flex-col gap-sm">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-orange-500" style="font-variation-settings: 'FILL' 1;">trending_up</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant bg-white/5 px-2 py-1 rounded">SPENDING</span>
+</div>
+<div class="space-y-1">
+<h3 class="text-headline-md font-headline-md text-on-surface">Food spending up 18%</h3>
+<p class="text-label-md font-label-md text-on-surface-variant">You've spent ₹4,200 more on dining out than your 3-month average. Consider a home-cooked meal tonight?</p>
+</div>
+</div>
+<!-- Insight 2: Saving Goal Progress (Success - Green) -->
+<div class="glass-card insight-border-green p-container-padding rounded-xl flex flex-col gap-sm">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-green-500" style="font-variation-settings: 'FILL' 1;">savings</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant bg-white/5 px-2 py-1 rounded">GOALS</span>
+</div>
+<div class="space-y-1">
+<h3 class="text-headline-md font-headline-md text-on-surface">Emergency fund reached 85%</h3>
+<p class="text-label-md font-label-md text-on-surface-variant">Great job! You're only ₹12,000 away from your 6-month safety net goal. Keep the momentum going!</p>
+</div>
+<div class="w-full h-2 bg-white/5 rounded-full mt-2">
+<div class="h-full bg-gradient-to-r from-green-500 to-primary rounded-full" style="width: 85%;"></div>
+</div>
+</div>
+<!-- Insight 3: Investment Opportunity (Info - Blue) -->
+<div class="glass-card insight-border-blue p-container-padding rounded-xl flex flex-col gap-sm">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-blue-500" style="font-variation-settings: 'FILL' 1;">show_chart</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant bg-white/5 px-2 py-1 rounded">INVEST</span>
+</div>
+<div class="space-y-1">
+<h3 class="text-headline-md font-headline-md text-on-surface">Idle cash detected</h3>
+<p class="text-label-md font-label-md text-on-surface-variant">₹50,000 has been sitting in your savings for 30 days. Moving this to a Liquid Fund could earn ~6% p.a.</p>
+</div>
+</div>
+<!-- Insight 4: Subscription Alert (Warning - Orange) -->
+<div class="glass-card insight-border-orange p-container-padding rounded-xl flex flex-col gap-sm">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-orange-500" style="font-variation-settings: 'FILL' 1;">event_repeat</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant bg-white/5 px-2 py-1 rounded">RECURRING</span>
+</div>
+<div class="space-y-1">
+<h3 class="text-headline-md font-headline-md text-on-surface">Double subscription detected</h3>
+<p class="text-label-md font-label-md text-on-surface-variant">We found two payments to "CloudStorage Inc" this month. You might want to check for duplicate accounts.</p>
+</div>
+</div>
+<!-- Insight 5: Budget Discipline (Success - Green) -->
+<div class="glass-card insight-border-green p-container-padding rounded-xl flex flex-col gap-sm">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-green-500" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant bg-white/5 px-2 py-1 rounded">BUDGET</span>
+</div>
+<div class="space-y-1">
+<h3 class="text-headline-md font-headline-md text-on-surface">Under budget in Shopping</h3>
+<p class="text-label-md font-label-md text-on-surface-variant">You're 30% below your shopping budget this month. This surplus has been moved to your "Travel" goal.</p>
+</div>
+</div>
+<!-- Insight 6: Bills Analysis (Info - Blue) -->
+<div class="glass-card insight-border-blue p-container-padding rounded-xl flex flex-col gap-sm">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-blue-500" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant bg-white/5 px-2 py-1 rounded">BILLS</span>
+</div>
+<div class="space-y-1">
+<h3 class="text-headline-md font-headline-md text-on-surface">Electricity bill is lower</h3>
+<p class="text-label-md font-label-md text-on-surface-variant">Your utility bill is ₹800 lower than last month. Great job on energy efficiency!</p>
+</div>
+</div>
+<!-- Insight 7: Market Sentiment (Info - Blue) -->
+<div class="glass-card insight-border-blue p-container-padding rounded-xl flex flex-col gap-sm">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-blue-500" style="font-variation-settings: 'FILL' 1;">analytics</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant bg-white/5 px-2 py-1 rounded">MARKET</span>
+</div>
+<div class="space-y-1">
+<h3 class="text-headline-md font-headline-md text-on-surface">Tech sector rebound</h3>
+<p class="text-label-md font-label-md text-on-surface-variant">Your portfolio's tech holdings are up 4.2% following the recent quarterly earnings reports.</p>
+</div>
+</div>
+<!-- Insight 8: Reward Recommendation (Success - Green) -->
+<div class="glass-card insight-border-green p-container-padding rounded-xl flex flex-col gap-sm">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-green-500" style="font-variation-settings: 'FILL' 1;">redeem</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant bg-white/5 px-2 py-1 rounded">REWARDS</span>
+</div>
+<div class="space-y-1">
+<h3 class="text-headline-md font-headline-md text-on-surface">Unused Credit Points</h3>
+<p class="text-label-md font-label-md text-on-surface-variant">You have 12,400 points expiring in 15 days. Redeem them for a ₹1,000 Amazon voucher now.</p>
+</div>
+<button class="mt-2 py-2 px-4 bg-primary text-on-primary font-label-md rounded-lg self-start active:scale-95 transition-transform">Redeem Now</button>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pt-3 pb-safe bg-surface/80 dark:bg-surface/80 backdrop-blur-2xl border-t border-white/10 h-20">
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline hover:text-primary-container" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-label-sm font-label-sm">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary dark:text-secondary scale-110 duration-300 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
+<span class="text-label-sm font-label-sm">Activity</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline hover:text-primary-container" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="text-label-sm font-label-sm">Budget</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline hover:text-primary-container" href="#">
+<span class="material-symbols-outlined">ads_click</span>
+<span class="text-label-sm font-label-sm">Goals</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline hover:text-primary-container" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-label-sm font-label-sm">Profile</span>
+</a>
+</nav>
+<!-- Micro-interaction Script -->
+<script>
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.backgroundColor = 'rgba(255, 255, 255, 0.03)';
+            });
+        });
+    </script>
+</body></html>

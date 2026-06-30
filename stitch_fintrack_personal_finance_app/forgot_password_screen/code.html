@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>FinTrack - Forgot Password</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed": "#dfe2f3",
+                    "surface-container-high": "#1c2b3c",
+                    "tertiary-container": "#8d90a0",
+                    "on-primary-fixed-variant": "#004492",
+                    "secondary-fixed": "#a7eeff",
+                    "outline": "#8c909e",
+                    "outline-variant": "#424753",
+                    "error-container": "#93000a",
+                    "on-secondary-fixed-variant": "#004e5b",
+                    "on-secondary-container": "#004b57",
+                    "primary-container": "#508ff8",
+                    "on-error": "#690005",
+                    "on-tertiary": "#2c303d",
+                    "surface-variant": "#273647",
+                    "on-surface": "#d4e4fa",
+                    "on-secondary": "#00363f",
+                    "tertiary-fixed-dim": "#c3c6d7",
+                    "surface-container-low": "#0d1c2d",
+                    "surface-tint": "#acc7ff",
+                    "secondary-container": "#00c2de",
+                    "on-secondary-container": "#004b57",
+                    "primary-container": "#508ff8",
+                    "on-error": "#690005",
+                    "on-tertiary": "#2c303d",
+                    "surface-variant": "#273647",
+                    "on-surface": "#d4e4fa",
+                    "on-secondary": "#00363f",
+                    "tertiary-fixed-dim": "#c3c6d7",
+                    "surface-container-low": "#0d1c2d",
+                    "surface-tint": "#acc7ff",
+                    "secondary-container": "#00c2de",
+                    "on-surface-variant": "#c2c6d5",
+                    "on-primary": "#002f68",
+                    "on-primary-container": "#00285b",
+                    "surface-container-highest": "#273647",
+                    "surface-container": "#122131",
+                    "tertiary": "#c3c6d7",
+                    "primary": "#acc7ff",
+                    "surface-bright": "#2c3a4c",
+                    "primary-fixed": "#d7e2ff",
+                    "secondary-fixed-dim": "#3ad8f5",
+                    "on-secondary-fixed": "#001f25",
+                    "surface": "#051424",
+                    "inverse-on-surface": "#233143",
+                    "secondary": "#43defb",
+                    "inverse-surface": "#d4e4fa",
+                    "on-tertiary-fixed-variant": "#434654",
+                    "on-error-container": "#ffdad6",
+                    "on-background": "#d4e4fa",
+                    "on-tertiary-container": "#252936",
+                    "surface-dim": "#051424",
+                    "primary-fixed-dim": "#acc7ff",
+                    "surface-container-lowest": "#010f1f",
+                    "on-tertiary-fixed": "#171b28",
+                    "on-primary-fixed": "#001a40",
+                    "background": "#051424",
+                    "inverse-primary": "#005bbf",
+                    "error": "#ffb4ab"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "sm": "8px",
+                    "base": "4px",
+                    "xs": "4px",
+                    "container-padding": "20px",
+                    "md": "16px",
+                    "xl": "32px",
+                    "lg": "24px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "display-currency": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "display-currency": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #051424;
+            color: #d4e4fa;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid transparent;
+            border-image: linear-gradient(to bottom right, rgba(255, 255, 255, 0.15), rgba(79, 142, 247, 0.05)) 1;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .primary-button {
+            background: #4F8EF7;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .primary-button:active {
+            transform: scale(0.95);
+            background: #3d7ce0;
+        }
+
+        .input-glass {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: border-color 0.3s ease;
+        }
+
+        .input-glass:focus {
+            border-color: #4F8EF7;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(79, 142, 247, 0.2);
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .bg-gradient-mesh {
+            background: radial-gradient(circle at 10% 20%, rgba(79, 142, 247, 0.08) 0%, transparent 40%),
+                        radial-gradient(circle at 90% 80%, rgba(67, 222, 251, 0.05) 0%, transparent 40%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background min-h-screen flex flex-col items-center justify-center relative bg-gradient-mesh px-container-padding">
+<!-- Back Navigation Shell (Back Arrow) -->
+<nav class="fixed top-0 left-0 w-full z-50 flex items-center px-container-padding h-16">
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/5 transition-colors active:scale-95 duration-200 text-primary" onclick="history.back()">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+</nav>
+<!-- Main Content Area: Forgot Password -->
+<main class="w-full max-w-md z-10">
+<!-- Brand / Identity Header -->
+<div class="text-center mb-xl">
+<div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary-container/20 mb-md ring-1 ring-primary-container/30">
+<span class="material-symbols-outlined text-primary text-[32px]" data-icon="lock_reset" style="font-variation-settings: 'FILL' 0;">lock_reset</span>
+</div>
+<h1 class="text-headline-lg-mobile md:text-headline-lg font-headline-lg text-on-surface mb-sm">Forgot Password</h1>
+<p class="text-body-md font-body-md text-on-surface-variant max-w-xs mx-auto">
+                No worries, it happens. Enter the email address associated with your account.
+            </p>
+</div>
+<!-- Action Card -->
+<div class="glass-card rounded-xl p-lg space-y-lg">
+<form class="space-y-lg" id="resetForm" onsubmit="event.preventDefault();">
+<div class="space-y-sm">
+<label class="text-label-md font-label-md text-on-surface-variant block ml-1" for="email">Email Address</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-[20px]" data-icon="mail">mail</span>
+<input class="input-glass w-full h-14 pl-12 pr-4 rounded-xl text-body-md font-body-md text-on-surface placeholder:text-outline/50" id="email" name="email" placeholder="name@company.com" required="" type="email"/>
+</div>
+</div>
+<button class="primary-button w-full h-14 rounded-xl text-label-md font-label-md font-bold text-white shadow-lg shadow-primary-container/20 flex items-center justify-center gap-2" type="submit">
+                    Send Reset Link
+                    <span class="material-symbols-outlined text-[20px]" data-icon="send">send</span>
+</button>
+</form>
+</div>
+<!-- Footer Help -->
+<p class="text-center mt-xl text-label-md font-label-md text-on-surface-variant">
+            Remembered your password? 
+            <a class="text-primary font-bold hover:underline ml-1" href="#">Log In</a>
+</p>
+</main>
+<!-- Decorative Background Elements (Glass Shards) -->
+<div class="absolute top-[-10%] right-[-10%] w-[400px] h-[400px] bg-primary/10 blur-[120px] rounded-full -z-0"></div>
+<div class="absolute bottom-[-10%] left-[-10%] w-[300px] h-[300px] bg-secondary/5 blur-[100px] rounded-full -z-0"></div>
+<script>
+        // Micro-interaction: Form Submission Feedback
+        const form = document.getElementById('resetForm');
+        form.addEventListener('submit', function() {
+            const button = form.querySelector('button');
+            const originalContent = button.innerHTML;
+            
+            button.disabled = true;
+            button.innerHTML = `<span class="material-symbols-outlined animate-spin" data-icon="progress_activity">progress_activity</span> Sending...`;
+            
+            // Simulate API Call
+            setTimeout(() => {
+                button.classList.remove('primary-button');
+                button.classList.add('bg-secondary', 'text-on-secondary-container');
+                button.innerHTML = `<span class="material-symbols-outlined" data-icon="check_circle">check_circle</span> Link Sent!`;
+                
+                // Show a brief message or redirect
+                const successMsg = document.createElement('p');
+                successMsg.className = 'text-center text-label-sm font-label-sm text-secondary mt-4 animate-bounce';
+                successMsg.textContent = 'Please check your inbox for the reset instructions.';
+                form.appendChild(successMsg);
+            }, 1500);
+        });
+
+        // Hover Effect on Input
+        const emailInput = document.getElementById('email');
+        emailInput.addEventListener('focus', () => {
+            emailInput.parentElement.querySelector('.material-symbols-outlined').style.color = '#acc7ff';
+        });
+        emailInput.addEventListener('blur', () => {
+            emailInput.parentElement.querySelector('.material-symbols-outlined').style.color = '';
+        });
+    </script>
+</body></html>

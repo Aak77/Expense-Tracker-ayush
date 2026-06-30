@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Net Worth History | FinTrack</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #051424;
+            color: #d4e4fa;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(79,142,247,0.05) 100%);
+            pointer-events: none;
+        }
+
+        .chart-container {
+            mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+        }
+
+        .glow-accent {
+            filter: drop-shadow(0 0 8px rgba(67, 222, 251, 0.4));
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#dfe2f3",
+                        "surface-container-high": "#1c2b3c",
+                        "tertiary-container": "#8d90a0",
+                        "on-primary-fixed-variant": "#004492",
+                        "secondary-fixed": "#a7eeff",
+                        "outline": "#8c909e",
+                        "outline-variant": "#424753",
+                        "error-container": "#93000a",
+                        "on-secondary-fixed-variant": "#004e5b",
+                        "on-secondary-container": "#004b57",
+                        "primary-container": "#508ff8",
+                        "on-error": "#690005",
+                        "on-tertiary": "#2c303d",
+                        "surface-variant": "#273647",
+                        "on-surface": "#d4e4fa",
+                        "on-secondary": "#00363f",
+                        "tertiary-fixed-dim": "#c3c6d7",
+                        "surface-container-low": "#0d1c2d",
+                        "surface-tint": "#acc7ff",
+                        "secondary-container": "#00c2de",
+                        "on-surface-variant": "#c2c6d5",
+                        "on-primary": "#002f68",
+                        "on-primary-container": "#00285b",
+                        "surface-container-highest": "#273647",
+                        "surface-container": "#122131",
+                        "tertiary": "#c3c6d7",
+                        "primary": "#acc7ff",
+                        "surface-bright": "#2c3a4c",
+                        "primary-fixed": "#d7e2ff",
+                        "secondary-fixed-dim": "#3ad8f5",
+                        "on-secondary-fixed": "#001f25",
+                        "surface": "#051424",
+                        "inverse-on-surface": "#233143",
+                        "secondary": "#43defb",
+                        "inverse-surface": "#d4e4fa",
+                        "on-tertiary-fixed-variant": "#434654",
+                        "on-error-container": "#ffdad6",
+                        "on-background": "#d4e4fa",
+                        "on-tertiary-container": "#252936",
+                        "surface-dim": "#051424",
+                        "primary-fixed-dim": "#acc7ff",
+                        "surface-container-lowest": "#010f1f",
+                        "on-tertiary-fixed": "#171b28",
+                        "on-primary-fixed": "#001a40",
+                        "background": "#051424",
+                        "inverse-primary": "#005bbf",
+                        "error": "#ffb4ab"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "base": "4px",
+                        "xs": "4px",
+                        "container-padding": "20px",
+                        "md": "16px",
+                        "xl": "32px",
+                        "lg": "24px"
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "display-currency": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col">
+<!-- Top App Bar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-padding h-16 bg-surface/80 dark:bg-surface/80 backdrop-blur-xl border-b border-white/10">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full overflow-hidden border border-primary/20">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="A high-quality studio portrait of a professional individual with a warm smile, set against a dark, blurred background that complements a premium corporate tech aesthetic. The lighting is cinematic with soft blue rim light highlights, maintaining the sophisticated blue and dark navy palette of a high-end fintech application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRMetOpv_8TtqcQqsiR69FILURAOG1r-rm3t6gLcHhmb4Ok2J_3vZidd9ZlJ4lc_NPAyOTsWVVpgKeIvTNNrUyCznaMIiV18Xh558rcYM6x46kJUmaVcFMdeIZK8HsW4JXCD_yhOtqgctp2-ApimchwOdD63sLsPnq90_W9iSiDy3RrrCL7qWyosEQJqn3vQxcINX8jhj2BhHx0GzBVLr14Ky-CJQqrXYpEu2-_8Tq-22IioSx46Hqvw0c1mKxq5OpDgdAIAoKOrea"/>
+</div>
+<h1 class="text-headline-md font-headline-md font-bold text-primary dark:text-primary">FinTrack</h1>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full text-primary hover:bg-white/5 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-20 pb-24 px-container-padding max-w-4xl mx-auto w-full">
+<!-- Net Worth Headline Section -->
+<section class="mb-lg">
+<p class="text-label-md font-label-md text-on-surface-variant mb-1 uppercase tracking-widest">Total Net Worth</p>
+<div class="flex items-baseline gap-2">
+<span class="text-display-currency font-display-currency text-secondary glow-accent">₹1,24,50,000</span>
+<span class="text-label-md font-label-md text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[14px]" data-icon="trending_up">trending_up</span>
+                    14.2%
+                </span>
+</div>
+</section>
+<!-- 12-Month Performance Chart -->
+<section class="mb-xl relative">
+<div class="glass-card rounded-xl p-md h-[300px] flex flex-col justify-between">
+<div class="flex justify-between items-center mb-base">
+<h2 class="text-headline-md font-headline-md">12-Month Growth</h2>
+<div class="flex gap-2">
+<span class="flex items-center gap-1.5 text-label-sm font-label-sm text-outline">
+<span class="w-2 h-2 rounded-full bg-secondary"></span> Net Worth
+                        </span>
+</div>
+</div>
+<!-- SVG Chart Mock -->
+<div class="flex-grow relative chart-container mt-4">
+<svg class="w-full h-full preserve-3d" viewbox="0 0 400 200">
+<!-- Background Grid -->
+<line stroke="rgba(255,255,255,0.05)" stroke-width="1" x1="0" x2="400" y1="40" y2="40"></line>
+<line stroke="rgba(255,255,255,0.05)" stroke-width="1" x1="0" x2="400" y1="80" y2="80"></line>
+<line stroke="rgba(255,255,255,0.05)" stroke-width="1" x1="0" x2="400" y1="120" y2="120"></line>
+<line stroke="rgba(255,255,255,0.05)" stroke-width="1" x1="0" x2="400" y1="160" y2="160"></line>
+<!-- Area Gradient -->
+<defs>
+<lineargradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#43defb" stop-opacity="0.3"></stop>
+<stop offset="100%" stop-color="#43defb" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<path d="M0,180 L20,175 L40,165 L80,155 L120,160 L160,140 L200,145 L240,120 L280,100 L320,80 L360,70 L400,60 L400,200 L0,200 Z" fill="url(#chartGradient)"></path>
+<!-- Line Path -->
+<path d="M0,180 L20,175 L40,165 L80,155 L120,160 L160,140 L200,145 L240,120 L280,100 L320,80 L360,70 L400,60" fill="none" stroke="#43defb" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path>
+<!-- Data Point Indicators -->
+<circle class="animate-pulse" cx="400" cy="60" fill="#43defb" r="4"></circle>
+</svg>
+</div>
+<div class="flex justify-between text-label-sm font-label-sm text-outline-variant px-1 mt-2">
+<span>JAN</span>
+<span>MAR</span>
+<span>MAY</span>
+<span>JUL</span>
+<span>SEP</span>
+<span>NOV</span>
+</div>
+</div>
+</section>
+<!-- Summary Table -->
+<section>
+<div class="flex justify-between items-center mb-md px-1">
+<h2 class="text-headline-md font-headline-md">Monthly breakdown</h2>
+<button class="text-label-md font-label-md text-primary flex items-center gap-1 hover:underline">
+                    Export <span class="material-symbols-outlined text-[16px]" data-icon="ios_share">ios_share</span>
+</button>
+</div>
+<div class="glass-card rounded-xl overflow-hidden">
+<div class="overflow-x-auto custom-scrollbar">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-white/5 border-b border-white/5">
+<th class="py-4 px-container-padding text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Month</th>
+<th class="py-4 px-md text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider text-right">Assets</th>
+<th class="py-4 px-md text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider text-right">Liabilities</th>
+<th class="py-4 px-container-padding text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider text-right">Net Worth</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/5">
+<tr class="hover:bg-white/5 transition-colors">
+<td class="py-4 px-container-padding text-label-md font-label-md">Nov 2023</td>
+<td class="py-4 px-md text-label-md font-label-md text-right">₹1,45,00,000</td>
+<td class="py-4 px-md text-label-md font-label-md text-right text-error">₹20,50,000</td>
+<td class="py-4 px-container-padding text-headline-md font-headline-md text-right text-secondary">₹1,24,50,000</td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors">
+<td class="py-4 px-container-padding text-label-md font-label-md">Oct 2023</td>
+<td class="py-4 px-md text-label-md font-label-md text-right">₹1,38,00,000</td>
+<td class="py-4 px-md text-label-md font-label-md text-right text-error">₹21,00,000</td>
+<td class="py-4 px-container-padding text-headline-md font-headline-md text-right text-secondary">₹1,17,00,000</td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors">
+<td class="py-4 px-container-padding text-label-md font-label-md">Sep 2023</td>
+<td class="py-4 px-md text-label-md font-label-md text-right">₹1,30,00,000</td>
+<td class="py-4 px-md text-label-md font-label-md text-right text-error">₹22,00,000</td>
+<td class="py-4 px-container-padding text-headline-md font-headline-md text-right text-secondary">₹1,08,00,000</td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors">
+<td class="py-4 px-container-padding text-label-md font-label-md">Aug 2023</td>
+<td class="py-4 px-md text-label-md font-label-md text-right">₹1,25,00,000</td>
+<td class="py-4 px-md text-label-md font-label-md text-right text-error">₹24,50,000</td>
+<td class="py-4 px-container-padding text-headline-md font-headline-md text-right text-secondary">₹1,00,50,000</td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors">
+<td class="py-4 px-container-padding text-label-md font-label-md">Jul 2023</td>
+<td class="py-4 px-md text-label-md font-label-md text-right">₹1,18,00,000</td>
+<td class="py-4 px-md text-label-md font-label-md text-right text-error">₹25,00,000</td>
+<td class="py-4 px-container-padding text-headline-md font-headline-md text-right text-secondary">₹93,00,000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="mt-md flex justify-center">
+<button class="text-label-sm font-label-sm text-outline-variant hover:text-primary transition-colors flex items-center gap-2">
+                    Show older records <span class="material-symbols-outlined text-[16px]" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+</button>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pt-3 pb-safe bg-surface/80 dark:bg-surface/80 backdrop-blur-2xl border-t border-white/10">
+<!-- Home -->
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline hover:text-primary-container group transition-all" href="#">
+<span class="material-symbols-outlined text-[24px] group-hover:scale-110 transition-transform" data-icon="home">home</span>
+<span class="text-label-sm font-label-sm mt-1">Home</span>
+</a>
+<!-- Activity - Active State determined as related to history -->
+<a class="flex flex-col items-center justify-center text-secondary dark:text-secondary scale-110 duration-300 transition-transform" href="#">
+<span class="material-symbols-outlined text-[24px]" data-icon="receipt_long">receipt_long</span>
+<span class="text-label-sm font-label-sm mt-1">Activity</span>
+</a>
+<!-- Budget -->
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline hover:text-primary-container group transition-all" href="#">
+<span class="material-symbols-outlined text-[24px] group-hover:scale-110 transition-transform" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="text-label-sm font-label-sm mt-1">Budget</span>
+</a>
+<!-- Goals -->
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline hover:text-primary-container group transition-all" href="#">
+<span class="material-symbols-outlined text-[24px] group-hover:scale-110 transition-transform" data-icon="ads_click">ads_click</span>
+<span class="text-label-sm font-label-sm mt-1">Goals</span>
+</a>
+<!-- Profile -->
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline hover:text-primary-container group transition-all" href="#">
+<span class="material-symbols-outlined text-[24px] group-hover:scale-110 transition-transform" data-icon="person">person</span>
+<span class="text-label-sm font-label-sm mt-1">Profile</span>
+</a>
+</nav>
+<script>
+        // Micro-interactions for table rows
+        document.querySelectorAll('tbody tr').forEach(row => {
+            row.addEventListener('mousedown', () => {
+                row.classList.add('scale-[0.98]', 'transition-transform', 'duration-200');
+            });
+            row.addEventListener('mouseup', () => {
+                row.classList.remove('scale-[0.98]');
+            });
+            row.addEventListener('mouseleave', () => {
+                row.classList.remove('scale-[0.98]');
+            });
+        });
+
+        // Simple parallax effect for the chart area
+        window.addEventListener('scroll', () => {
+            const scroll = window.pageYOffset;
+            const chart = document.querySelector('.chart-container svg');
+            if (chart) {
+                chart.style.transform = `translateY(${scroll * 0.05}px)`;
+            }
+        });
+    </script>
+</body></html>

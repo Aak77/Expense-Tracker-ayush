@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>FinTrack | Savings Goals</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #051424;
+            color: #d4e4fa;
+            -webkit-font-smoothing: antialiased;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-image: linear-gradient(to bottom right, rgba(255,255,255,0.15), rgba(79,142,247,0.05)) 1;
+        }
+        .progress-ring-circle {
+            transition: stroke-dashoffset 0.35s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+        .fab-glow {
+            box-shadow: 0 0 20px rgba(79, 142, 247, 0.4);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-fixed": "#dfe2f3",
+                      "surface-container-high": "#1c2b3c",
+                      "tertiary-container": "#8d90a0",
+                      "on-primary-fixed-variant": "#004492",
+                      "secondary-fixed": "#a7eeff",
+                      "outline": "#8c909e",
+                      "outline-variant": "#424753",
+                      "error-container": "#93000a",
+                      "on-secondary-fixed-variant": "#004e5b",
+                      "on-secondary-container": "#004b57",
+                      "primary-container": "#508ff8",
+                      "on-error": "#690005",
+                      "on-tertiary": "#2c303d",
+                      "surface-variant": "#273647",
+                      "on-surface": "#d4e4fa",
+                      "on-secondary": "#00363f",
+                      "tertiary-fixed-dim": "#c3c6d7",
+                      "surface-container-low": "#0d1c2d",
+                      "surface-tint": "#acc7ff",
+                      "secondary-container": "#00c2de",
+                      "on-surface-variant": "#c2c6d5",
+                      "on-primary": "#002f68",
+                      "on-primary-container": "#00285b",
+                      "surface-container-highest": "#273647",
+                      "surface-container": "#122131",
+                      "tertiary": "#c3c6d7",
+                      "primary": "#acc7ff",
+                      "surface-bright": "#2c3a4c",
+                      "primary-fixed": "#d7e2ff",
+                      "secondary-fixed-dim": "#3ad8f5",
+                      "on-secondary-fixed": "#001f25",
+                      "surface": "#051424",
+                      "inverse-on-surface": "#233143",
+                      "secondary": "#43defb",
+                      "inverse-surface": "#d4e4fa",
+                      "on-tertiary-fixed-variant": "#434654",
+                      "on-error-container": "#ffdad6",
+                      "on-background": "#d4e4fa",
+                      "on-tertiary-container": "#252936",
+                      "surface-dim": "#051424",
+                      "primary-fixed-dim": "#acc7ff",
+                      "surface-container-lowest": "#010f1f",
+                      "on-tertiary-fixed": "#171b28",
+                      "on-primary-fixed": "#001a40",
+                      "background": "#051424",
+                      "inverse-primary": "#005bbf",
+                      "error": "#ffb4ab"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "sm": "8px",
+                      "base": "4px",
+                      "xs": "4px",
+                      "container-padding": "20px",
+                      "md": "16px",
+                      "xl": "32px",
+                      "lg": "24px"
+              },
+              "fontFamily": {
+                      "body-md": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "label-md": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "display-currency": ["Inter"]
+              },
+              "fontSize": {
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "display-currency": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-32">
+<!-- Top App Bar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-padding h-16 bg-surface/80 dark:bg-surface/80 backdrop-blur-xl border-b border-white/10">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full overflow-hidden border border-primary/20">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="A high-quality professional portrait of a modern young financial professional with a confident expression. The lighting is soft and cinematic with cool blue and deep navy tones, reflecting a high-end corporate fintech aesthetic. The background is a blurred office interior with glass walls and subtle tech lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjGCoQ4XZwUNyc2TUB5SY9PooFXNd1kUUshrt5n3MiPUj5Oq7pHlK_p3Y2OOJWYZTvujPntSoNI3qD9REfC9mx-c7Y880LYH-mMMsUSOn646BfErFPwmk1NZJ_8PLeT4wU31wcBvbjxcniuYJHoua9sHr6hZFwI4jIo1s9fBFADyYgr9JhFmAlCIEOug_HzRgMF6E6zrzUOp12b2kcankoJfhZNdwip0lyZSCIsYSsArHnxOZA7hhulvftZ6jCRreP9oEg5P7JNxdJ"/>
+</div>
+<span class="text-headline-md font-headline-md font-bold text-primary">FinTrack</span>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/5 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined text-primary" data-icon="notifications">notifications</span>
+</button>
+</header>
+<main class="pt-24 px-container-padding">
+<!-- Hero Section -->
+<section class="mb-lg">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary mb-xs">Savings Goals</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Every rupee counts.</p>
+</section>
+<!-- Bento Grid for Goals -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<!-- Goal Card: New Laptop -->
+<div class="glass-card rounded-xl p-container-padding flex flex-col gap-md relative overflow-hidden group">
+<!-- Background Decorative Glow -->
+<div class="absolute -top-10 -right-10 w-32 h-32 bg-primary/10 rounded-full blur-3xl group-hover:bg-primary/20 transition-all"></div>
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs">New Laptop 💻</h3>
+<p class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Electronics Fund</p>
+</div>
+<div class="relative w-16 h-16">
+<svg class="w-full h-full" viewbox="0 0 36 36">
+<circle class="stroke-surface-container-highest" cx="18" cy="18" fill="none" r="16" stroke-width="3"></circle>
+<circle class="stroke-primary progress-ring-circle" cx="18" cy="18" fill="none" r="16" stroke-dasharray="100" stroke-dashoffset="60" stroke-linecap="round" stroke-width="3"></circle>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="font-label-sm text-label-sm text-primary">40%</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-sm">
+<div class="flex justify-between items-end">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Current</span>
+<span class="font-headline-md text-headline-md text-on-surface">₹32,000</span>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Target</span>
+<span class="font-label-md text-label-md text-outline">₹80,000</span>
+</div>
+</div>
+<!-- Custom Progress Bar -->
+<div class="h-2 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-secondary w-[40%] rounded-full"></div>
+</div>
+</div>
+<div class="pt-sm border-t border-white/5 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline text-[18px]" data-icon="event">event</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Est. Oct 2024</span>
+</div>
+<button class="text-primary font-label-md hover:underline">Add Money</button>
+</div>
+</div>
+<!-- Goal Card: Europe Trip -->
+<div class="glass-card rounded-xl p-container-padding flex flex-col gap-md relative overflow-hidden group">
+<div class="absolute -top-10 -right-10 w-32 h-32 bg-secondary/10 rounded-full blur-3xl group-hover:bg-secondary/20 transition-all"></div>
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs">Europe Trip ✈️</h3>
+<p class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Vacation Fund</p>
+</div>
+<div class="relative w-16 h-16">
+<svg class="w-full h-full" viewbox="0 0 36 36">
+<circle class="stroke-surface-container-highest" cx="18" cy="18" fill="none" r="16" stroke-width="3"></circle>
+<circle class="stroke-secondary progress-ring-circle" cx="18" cy="18" fill="none" r="16" stroke-dasharray="100" stroke-dashoffset="25" stroke-linecap="round" stroke-width="3"></circle>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="font-label-sm text-label-sm text-secondary">75%</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-sm">
+<div class="flex justify-between items-end">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Current</span>
+<span class="font-headline-md text-headline-md text-on-surface">₹1,50,000</span>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Target</span>
+<span class="font-label-md text-label-md text-outline">₹2,00,000</span>
+</div>
+</div>
+<div class="h-2 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-secondary to-primary-container w-[75%] rounded-full"></div>
+</div>
+</div>
+<div class="pt-sm border-t border-white/5 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline text-[18px]" data-icon="event">event</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Est. Dec 2023</span>
+</div>
+<button class="text-secondary font-label-md hover:underline">Add Money</button>
+</div>
+</div>
+<!-- Summary Card -->
+<div class="glass-card rounded-xl p-container-padding flex items-center justify-between col-span-full border-primary/20">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-widest mb-1">Total Goal Savings</span>
+<span class="font-display-currency text-display-currency text-on-surface">₹1,82,000</span>
+</div>
+<div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[28px]" data-icon="trending_up">trending_up</span>
+</div>
+</div>
+<!-- Tip Card -->
+<div class="bg-surface-container-low border border-white/5 rounded-xl p-container-padding col-span-full">
+<div class="flex gap-md items-center">
+<div class="w-10 h-10 rounded-lg bg-secondary-container/20 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-secondary" data-icon="lightbulb">lightbulb</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-secondary">Smart Tip</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Increasing your monthly laptop savings by ₹2,000 could help you reach your goal 2 months early.</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- FAB -->
+<button class="fixed bottom-24 right-6 w-14 h-14 bg-primary text-on-primary rounded-full flex items-center justify-center fab-glow active:scale-95 transition-transform z-40">
+<span class="material-symbols-outlined text-[32px]" data-icon="add">add</span>
+</button>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pt-3 pb-safe bg-surface/80 dark:bg-surface/80 backdrop-blur-2xl border-t border-white/10">
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline hover:text-primary-container transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline hover:text-primary-container transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-label-sm text-label-sm">Activity</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline hover:text-primary-container transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-label-sm text-label-sm">Budget</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary dark:text-secondary scale-110 duration-300 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="ads_click" style="font-variation-settings: 'FILL' 1;">ads_click</span>
+<span class="font-label-sm text-label-sm">Goals</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline hover:text-primary-container transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction for cards
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+
+        // Simple animation for progress rings on load
+        window.addEventListener('DOMContentLoaded', () => {
+            const rings = document.querySelectorAll('.progress-ring-circle');
+            rings.forEach(ring => {
+                const offset = ring.getAttribute('stroke-dashoffset');
+                ring.style.strokeDashoffset = '100';
+                setTimeout(() => {
+                    ring.style.strokeDashoffset = offset;
+                }, 100);
+            });
+        });
+    </script>
+</body></html>

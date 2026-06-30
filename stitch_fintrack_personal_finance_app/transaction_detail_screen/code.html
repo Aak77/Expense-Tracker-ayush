@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Transaction Details - FinTrack</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "tertiary-fixed": "#dfe2f3",
+            "surface-container-high": "#1c2b3c",
+            "tertiary-container": "#8d90a0",
+            "on-primary-fixed-variant": "#004492",
+            "secondary-fixed": "#a7eeff",
+            "outline": "#8c909e",
+            "outline-variant": "#424753",
+            "error-container": "#93000a",
+            "on-secondary-fixed-variant": "#004e5b",
+            "on-secondary-container": "#004b57",
+            "primary-container": "#508ff8",
+            "on-error": "#690005",
+            "on-tertiary": "#2c303d",
+            "surface-variant": "#273647",
+            "on-surface": "#d4e4fa",
+            "on-secondary": "#00363f",
+            "tertiary-fixed-dim": "#c3c6d7",
+            "surface-container-low": "#0d1c2d",
+            "surface-tint": "#acc7ff",
+            "secondary-container": "#00c2de",
+            "on-surface-variant": "#c2c6d5",
+            "on-primary": "#002f68",
+            "on-primary-container": "#00285b",
+            "surface-container-highest": "#273647",
+            "surface-container": "#122131",
+            "tertiary": "#c3c6d7",
+            "primary": "#acc7ff",
+            "surface-bright": "#2c3a4c",
+            "primary-fixed": "#d7e2ff",
+            "secondary-fixed-dim": "#3ad8f5",
+            "on-secondary-fixed": "#001f25",
+            "surface": "#051424",
+            "inverse-on-surface": "#233143",
+            "secondary": "#43defb",
+            "inverse-surface": "#d4e4fa",
+            "on-tertiary-fixed-variant": "#434654",
+            "on-error-container": "#ffdad6",
+            "on-background": "#d4e4fa",
+            "on-tertiary-container": "#252936",
+            "surface-dim": "#051424",
+            "primary-fixed-dim": "#acc7ff",
+            "surface-container-lowest": "#010f1f",
+            "on-tertiary-fixed": "#171b28",
+            "on-primary-fixed": "#001a40",
+            "background": "#051424",
+            "inverse-primary": "#005bbf",
+            "error": "#ffb4ab"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "sm": "8px",
+            "base": "4px",
+            "xs": "4px",
+            "container-padding": "20px",
+            "md": "16px",
+            "xl": "32px",
+            "lg": "24px"
+          },
+          "fontFamily": {
+            "body-md": ["Inter"],
+            "headline-md": ["Inter"],
+            "headline-lg-mobile": ["Inter"],
+            "label-md": ["Inter"],
+            "headline-lg": ["Inter"],
+            "body-lg": ["Inter"],
+            "label-sm": ["Inter"],
+            "display-currency": ["Inter"]
+          },
+          "fontSize": {
+            "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+            "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+            "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+            "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+            "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+            "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+            "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+            "display-currency": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .glass-card {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(12px);
+      border: 1px solid transparent;
+      background-clip: padding-box;
+      position: relative;
+    }
+    .glass-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(79, 142, 247, 0.05));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen font-body-md overflow-x-hidden">
+<!-- Top App Bar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-padding h-16 bg-surface/80 dark:bg-surface/80 backdrop-blur-xl border-b border-white/10">
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/5 transition-colors duration-200 active:scale-95" onclick="history.back()">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="text-headline-md font-headline-md font-bold text-primary">Transaction Detail</h1>
+<div class="w-10"></div> <!-- Spacer for balance -->
+</header>
+<main class="pt-24 pb-12 px-container-padding max-w-lg mx-auto">
+<!-- Transaction Icon & Amount Header -->
+<section class="flex flex-col items-center mb-10">
+<div class="w-24 h-24 rounded-full bg-secondary-container/20 flex items-center justify-center mb-6 relative">
+<div class="absolute inset-0 rounded-full bg-secondary/10 blur-xl"></div>
+<span class="material-symbols-outlined text-secondary text-[48px] relative z-10" style="font-variation-settings: 'FILL' 1;">restaurant</span>
+</div>
+<div class="text-center">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-error-container/30 text-error text-label-sm font-label-sm mb-2 border border-error/20">
+          Expense
+        </span>
+<h2 class="text-display-currency font-display-currency text-on-surface">₹1,450.00</h2>
+<p class="text-on-surface-variant text-body-md font-body-md mt-1">Gourmet Garden Bistro</p>
+</div>
+</section>
+<!-- Detailed Info Bento Grid -->
+<div class="grid grid-cols-1 gap-md">
+<!-- Description & Category Card -->
+<div class="glass-card rounded-xl p-container-padding flex flex-col gap-4">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-outline">category</span>
+</div>
+<div>
+<p class="text-label-sm font-label-sm text-outline uppercase tracking-wider">Category</p>
+<p class="text-body-md font-body-md text-on-surface">Dining &amp; Drinks</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</div>
+<div class="h-[1px] w-full bg-white/5"></div>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-outline">notes</span>
+</div>
+<div>
+<p class="text-label-sm font-label-sm text-outline uppercase tracking-wider">Description</p>
+<p class="text-body-md font-body-md text-on-surface">Dinner with the product team for project kickoff celebration.</p>
+</div>
+</div>
+</div>
+<!-- Date & Account Card -->
+<div class="glass-card rounded-xl p-container-padding flex flex-col gap-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-outline">calendar_today</span>
+</div>
+<div>
+<p class="text-label-sm font-label-sm text-outline uppercase tracking-wider">Date &amp; Time</p>
+<p class="text-body-md font-body-md text-on-surface">Oct 24, 2023 • 08:45 PM</p>
+</div>
+</div>
+<div class="h-[1px] w-full bg-white/5"></div>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-outline">account_balance</span>
+</div>
+<div>
+<p class="text-label-sm font-label-sm text-outline uppercase tracking-wider">Paid Via</p>
+<p class="text-body-md font-body-md text-on-surface">HDFC Bank •••• 4291</p>
+</div>
+</div>
+</div>
+<!-- Receipt Visualization -->
+<div class="glass-card rounded-xl overflow-hidden group cursor-pointer relative h-48">
+<img class="w-full h-full object-cover opacity-40 group-hover:scale-105 transition-transform duration-700" data-alt="A macro photograph of a paper receipt with blurred financial figures and a warm, moody coffee shop ambiance. The lighting is soft and directional, creating deep shadows that emphasize the texture of the paper. The color palette is composed of rich sepia tones and deep blacks, aligned with a premium, executive aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLGrAjTccrdgyAoqK5haHRaU4wtJFr6lrilRTCpzd7U4SQCfyjquyV6nhlRiVPHjy3c016fhPJd5Z2IX2NMnBBr8pt_LbCctc0d_dLUcJf47MCXyT9ReMdjLP7KFRBWecTP4XGaWuD0zyfV8LKMKihxfVY1uiSlMKD_MdF5RL8Jl21YHD-GeGqC1EsEiWox3Q-0peNSFcne29xAUiFTQ4p9JdVwQBFiQ5KXc35mDa3RsoOAgl655wJwXM7Uy2T317Avb6fkY4B7lP4"/>
+<div class="absolute inset-0 flex flex-col items-center justify-center bg-surface/40 backdrop-blur-[2px]">
+<span class="material-symbols-outlined text-primary text-3xl mb-2">image</span>
+<p class="text-label-md font-label-md text-on-surface">View Receipt</p>
+</div>
+</div>
+</div>
+<!-- Actions -->
+<div class="mt-12 flex flex-col gap-4">
+<button class="w-full h-14 rounded-xl border border-primary-container text-primary font-bold text-body-md flex items-center justify-center gap-2 hover:bg-primary-container/10 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined">edit</span>
+        Edit Transaction
+      </button>
+<button class="w-full h-14 rounded-xl border border-error/30 text-error font-bold text-body-md flex items-center justify-center gap-2 hover:bg-error/10 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined">delete</span>
+        Delete Record
+      </button>
+</div>
+</main>
+<!-- Interactive Logic for small visual feedback -->
+<script>
+    document.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', function() {
+        // Add ripple or small animation logic if needed
+      });
+    });
+  </script>
+</body></html>

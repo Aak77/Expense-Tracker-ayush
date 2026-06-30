@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Add / Edit Budget - FinTrack</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed": "#dfe2f3",
+                    "surface-container-high": "#1c2b3c",
+                    "tertiary-container": "#8d90a0",
+                    "on-primary-fixed-variant": "#004492",
+                    "secondary-fixed": "#a7eeff",
+                    "outline": "#8c909e",
+                    "outline-variant": "#424753",
+                    "error-container": "#93000a",
+                    "on-secondary-fixed-variant": "#004e5b",
+                    "on-secondary-container": "#004b57",
+                    "primary-container": "#508ff8",
+                    "on-error": "#690005",
+                    "on-tertiary": "#2c303d",
+                    "surface-variant": "#273647",
+                    "on-surface": "#d4e4fa",
+                    "on-secondary": "#00363f",
+                    "tertiary-fixed-dim": "#c3c6d7",
+                    "surface-container-low": "#0d1c2d",
+                    "surface-tint": "#acc7ff",
+                    "secondary-container": "#00c2de",
+                    "on-surface-variant": "#c2c6d5",
+                    "on-primary": "#002f68",
+                    "on-primary-container": "#00285b",
+                    "surface-container-highest": "#273647",
+                    "surface-container": "#122131",
+                    "tertiary": "#c3c6d7",
+                    "primary": "#acc7ff",
+                    "surface-bright": "#2c3a4c",
+                    "primary-fixed": "#d7e2ff",
+                    "secondary-fixed-dim": "#3ad8f5",
+                    "on-secondary-fixed": "#001f25",
+                    "surface": "#051424",
+                    "inverse-on-surface": "#233143",
+                    "secondary": "#43defb",
+                    "inverse-surface": "#d4e4fa",
+                    "on-tertiary-fixed-variant": "#434654",
+                    "on-error-container": "#ffdad6",
+                    "on-background": "#d4e4fa",
+                    "on-tertiary-container": "#252936",
+                    "surface-dim": "#051424",
+                    "primary-fixed-dim": "#acc7ff",
+                    "surface-container-lowest": "#010f1f",
+                    "on-tertiary-fixed": "#171b28",
+                    "on-primary-fixed": "#001a40",
+                    "background": "#051424",
+                    "inverse-primary": "#005bbf",
+                    "error": "#ffb4ab"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "sm": "8px",
+                    "base": "4px",
+                    "xs": "4px",
+                    "container-padding": "20px",
+                    "md": "16px",
+                    "xl": "32px",
+                    "lg": "24px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "display-currency": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "display-currency": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid transparent;
+            background-clip: padding-box;
+            position: relative;
+        }
+        .glass-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(79, 142, 247, 0.05) 100%);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #4F8EF7 !important;
+            box-shadow: 0 0 0 2px rgba(79, 142, 247, 0.2);
+        }
+        .gradient-progress {
+            background: linear-gradient(90deg, #acc7ff 0%, #43defb 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background min-h-screen font-body-md overflow-x-hidden">
+<!-- Top App Bar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-padding h-16 bg-surface/80 dark:bg-surface/80 backdrop-blur-xl border-b border-white/10">
+<div class="flex items-center gap-4">
+<button class="p-2 -ml-2 rounded-full hover:bg-white/5 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<h1 class="text-headline-md font-headline-md font-bold text-primary">Set Budget</h1>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant p-2 rounded-full hover:bg-white/5 cursor-pointer">help_outline</span>
+</div>
+</header>
+<main class="pt-24 pb-12 px-container-padding max-w-lg mx-auto">
+<!-- Visual Context Card -->
+<div class="glass-card rounded-xl p-6 mb-8 text-center relative overflow-hidden">
+
+<p class="text-label-md font-label-md text-on-surface-variant mb-2">Target Monthly Limit</p>
+<div class="flex items-baseline justify-center gap-1">
+<span class="text-display-currency font-display-currency text-secondary">₹</span>
+<span class="text-display-currency font-display-currency text-on-surface" id="display-amount">0</span>
+</div>
+<p class="text-label-sm font-label-sm text-outline mt-2">Adjust your financial boundaries</p>
+</div>
+<!-- Form Section -->
+<form class="space-y-6">
+<!-- Category Dropdown -->
+<div class="space-y-2">
+<label class="block text-label-md font-label-md text-on-surface-variant ml-1" for="category">Category</label>
+<div class="relative">
+<select class="w-full h-14 pl-12 pr-4 bg-surface-container rounded-xl border border-outline-variant text-on-surface appearance-none focus:ring-0 transition-colors" id="category">
+<option disabled="" selected="" value="">Select a category</option>
+<option value="shopping">Shopping</option>
+<option value="dining">Dining &amp; Drinks</option>
+<option value="groceries">Groceries</option>
+<option value="travel">Travel &amp; Transport</option>
+<option value="entertainment">Entertainment</option>
+<option value="bills">Utility Bills</option>
+<option value="health">Health &amp; Wellness</option>
+</select>
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary">category</span>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-outline-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Monthly Limit Input -->
+<div class="space-y-2">
+<label class="block text-label-md font-label-md text-on-surface-variant ml-1" for="limit">Monthly Limit (₹)</label>
+<div class="relative">
+<input class="w-full h-14 pl-12 pr-4 bg-surface-container rounded-xl border border-outline-variant text-on-surface placeholder:text-outline/50 focus:ring-0 transition-colors" id="limit" oninput="document.getElementById('display-amount').innerText = this.value || '0'" placeholder="5,000" type="number"/>
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary">payments</span>
+</div>
+<div class="flex justify-between px-1">
+<span class="text-label-sm font-label-sm text-outline">Suggested: ₹12,500</span>
+<span class="text-label-sm font-label-sm text-secondary">View Trends</span>
+</div>
+</div>
+<!-- Recurrence Toggle (Atmospheric addition) -->
+<div class="glass-card rounded-xl p-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">sync</span>
+</div>
+<div>
+<p class="text-label-md font-label-md text-on-surface">Repeat Monthly</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Reset on the 1st of every month</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+<!-- Alert Threshold Slider (Atmospheric addition) -->
+<div class="space-y-4 pt-4">
+<div class="flex justify-between items-center px-1">
+<label class="text-label-md font-label-md text-on-surface-variant">Alert Threshold</label>
+<span class="text-label-md font-label-md text-primary">80%</span>
+</div>
+<div class="relative w-full h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="absolute top-0 left-0 h-full gradient-progress" style="width: 80%"></div>
+</div>
+<p class="text-label-sm font-label-sm text-outline px-1">We'll notify you when you reach 80% of this budget.</p>
+</div>
+<!-- Action Button -->
+<div class="pt-8">
+<button class="w-full h-14 bg-primary-container text-on-primary-container font-headline-md rounded-xl hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20" type="submit">
+<span>Save Budget</span>
+<span class="material-symbols-outlined">check_circle</span>
+</button>
+<button class="w-full h-14 mt-4 bg-transparent border border-outline-variant text-on-surface-variant font-label-md rounded-xl hover:bg-white/5 active:scale-[0.98] transition-all" type="button">
+                    Cancel
+                </button>
+</div>
+</form>
+</main>
+<!-- Background Decoration -->
+<div class="fixed top-1/4 -right-24 w-64 h-64 bg-primary/10 rounded-full blur-[100px] pointer-events-none z-[-1]"></div>
+<div class="fixed bottom-1/4 -left-24 w-64 h-64 bg-secondary/10 rounded-full blur-[100px] pointer-events-none z-[-1]"></div>
+<script>
+        // Simple micro-interaction for button press
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if(btn.type === 'submit') {
+                    e.preventDefault();
+                    btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span><span>Saving...</span>';
+                    setTimeout(() => {
+                        btn.innerHTML = '<span>Saved Successfully</span><span class="material-symbols-outlined">done_all</span>';
+                        btn.classList.replace('bg-primary-container', 'bg-green-500');
+                    }, 1500);
+                }
+            });
+        });
+    </script>
+</body></html>

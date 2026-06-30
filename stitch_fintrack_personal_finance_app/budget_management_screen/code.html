@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Budget Management - FinTrack</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #051424;
+            color: #d4e4fa;
+            -webkit-font-smoothing: antialiased;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .glass-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(79, 142, 247, 0.05) 100%);
+            pointer-events: none;
+        }
+        .progress-track {
+            background: rgba(255, 255, 255, 0.05);
+            height: 8px;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 999px;
+            transition: width 1s ease-out;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .safe-bottom {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-fixed": "#dfe2f3",
+                      "surface-container-high": "#1c2b3c",
+                      "tertiary-container": "#8d90a0",
+                      "on-primary-fixed-variant": "#004492",
+                      "secondary-fixed": "#a7eeff",
+                      "outline": "#8c909e",
+                      "outline-variant": "#424753",
+                      "error-container": "#93000a",
+                      "on-secondary-fixed-variant": "#004e5b",
+                      "on-secondary-container": "#004b57",
+                      "primary-container": "#508ff8",
+                      "on-error": "#690005",
+                      "on-tertiary": "#2c303d",
+                      "surface-variant": "#273647",
+                      "on-surface": "#d4e4fa",
+                      "on-secondary": "#00363f",
+                      "tertiary-fixed-dim": "#c3c6d7",
+                      "surface-container-low": "#0d1c2d",
+                      "surface-tint": "#acc7ff",
+                      "secondary-container": "#00c2de",
+                      "on-surface-variant": "#c2c6d5",
+                      "on-primary": "#002f68",
+                      "on-primary-container": "#00285b",
+                      "surface-container-highest": "#273647",
+                      "surface-container": "#122131",
+                      "tertiary": "#c3c6d7",
+                      "primary": "#acc7ff",
+                      "surface-bright": "#2c3a4c",
+                      "primary-fixed": "#d7e2ff",
+                      "secondary-fixed-dim": "#3ad8f5",
+                      "on-secondary-fixed": "#001f25",
+                      "surface": "#051424",
+                      "inverse-on-surface": "#233143",
+                      "secondary": "#43defb",
+                      "inverse-surface": "#d4e4fa",
+                      "on-tertiary-fixed-variant": "#434654",
+                      "on-error-container": "#ffdad6",
+                      "on-background": "#d4e4fa",
+                      "on-tertiary-container": "#252936",
+                      "surface-dim": "#051424",
+                      "primary-fixed-dim": "#acc7ff",
+                      "surface-container-lowest": "#010f1f",
+                      "on-tertiary-fixed": "#171b28",
+                      "on-primary-fixed": "#001a40",
+                      "background": "#051424",
+                      "inverse-primary": "#005bbf",
+                      "error": "#ffb4ab"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "sm": "8px",
+                      "base": "4px",
+                      "xs": "4px",
+                      "container-padding": "20px",
+                      "md": "16px",
+                      "xl": "32px",
+                      "lg": "24px"
+              },
+              "fontFamily": {
+                      "body-md": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "label-md": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "display-currency": ["Inter"]
+              },
+              "fontSize": {
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "display-currency": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen">
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-padding h-16 bg-surface/80 dark:bg-surface/80 backdrop-blur-xl border-b border-white/10">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden border border-primary/20">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="A close-up professional portrait of a confident man with a warm smile, set against a blurred urban background with soft evening lighting. The image style is cinematic and high-end, featuring deep contrast and a cool color temperature to match the premium dark mode aesthetic of the FinTrack application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvQJHP3_hLf-sWfw-1FvcDscc6vD5nhvTFmAzibWl-JeND8UOGa9lsdec36cG60DuhYzwbW9rKfesGxTXYBX5g0zMYgukV1PvLDtrj_59K1TgTmuUKKnT5yEVSvPXd6l7mQJSDwQAIEqbuda3tf3Rzc-bj5zlogI4fWzkLPqK_G-yBhVNMEQoLb6We42kWNHD2Cdu9RlUcEuHib6QP9RJZWszuX5DSq8xwmuJ2qiQmaxFsjL9eadGbX8Ylq6gjQxj_r5YN9voPkUAw"/>
+</div>
+<span class="text-headline-md font-headline-md font-bold text-primary">FinTrack</span>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full text-primary hover:bg-white/5 transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</header>
+<main class="pt-24 pb-32 px-container-padding max-w-2xl mx-auto">
+<section class="mb-lg">
+<div class="glass-card rounded-xl p-lg flex flex-col items-center relative overflow-hidden">
+
+<div class="relative z-10 w-full flex flex-col items-center">
+<span class="text-label-md font-label-md text-on-surface-variant mb-base">Total Utilization</span>
+<div class="flex items-baseline gap-1">
+<span class="text-display-currency font-display-currency text-secondary">78</span>
+<span class="text-headline-md font-headline-md text-secondary">%</span>
+</div>
+<div class="w-full mt-lg">
+<div class="flex justify-between text-label-sm font-label-sm mb-2">
+<span class="text-on-surface-variant">Spent: ₹1,24,800</span>
+<span class="text-on-surface-variant">Limit: ₹1,60,000</span>
+</div>
+<div class="progress-track">
+<div class="progress-fill bg-gradient-to-r from-primary to-secondary" style="width: 78%"></div>
+</div>
+<p class="text-label-sm font-label-sm text-center mt-3 text-outline">You are on track to save ₹35,200 this month</p>
+</div>
+</div>
+</div>
+</section>
+<div class="flex justify-between items-center mb-md">
+<h2 class="text-headline-md font-headline-md">Monthly Budgets</h2>
+<button class="text-label-md font-label-md text-primary flex items-center gap-1">
+                View History <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<div class="space-y-md">
+<div class="glass-card rounded-xl p-md">
+<div class="flex justify-between items-start mb-md">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="restaurant">restaurant</span>
+</div>
+<div>
+<h3 class="text-body-md font-headline-md">Food &amp; Dining</h3>
+<span class="text-label-sm font-label-sm text-outline">₹800 remaining</span>
+</div>
+</div>
+<div class="text-right">
+<div class="text-body-md font-headline-md">₹4,200 <span class="text-label-sm text-outline">/ ₹5,000</span></div>
+<span class="text-label-sm font-label-sm text-primary">84% used</span>
+</div>
+</div>
+<div class="progress-track">
+<div class="progress-fill bg-primary" style="width: 84%"></div>
+</div>
+</div>
+<div class="glass-card rounded-xl p-md">
+<div class="flex justify-between items-start mb-md">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined" data-icon="directions_car">directions_car</span>
+</div>
+<div>
+<h3 class="text-body-md font-headline-md">Transport</h3>
+<span class="text-label-sm font-label-sm text-outline">₹1,500 remaining</span>
+</div>
+</div>
+<div class="text-right">
+<div class="text-body-md font-headline-md">₹1,500 <span class="text-label-sm text-outline">/ ₹3,000</span></div>
+<span class="text-label-sm font-label-sm text-secondary">50% used</span>
+</div>
+</div>
+<div class="progress-track">
+<div class="progress-fill bg-secondary" style="width: 50%"></div>
+</div>
+</div>
+<div class="glass-card rounded-xl p-md">
+<div class="flex justify-between items-start mb-md">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-error-container/20 flex items-center justify-center text-error">
+<span class="material-symbols-outlined" data-icon="movie">movie</span>
+</div>
+<div>
+<h3 class="text-body-md font-headline-md">Entertainment</h3>
+<span class="text-label-sm font-label-sm text-error">₹200 over budget</span>
+</div>
+</div>
+<div class="text-right">
+<div class="text-body-md font-headline-md">₹2,200 <span class="text-label-sm text-outline">/ ₹2,000</span></div>
+<span class="text-label-sm font-label-sm text-error">110% used</span>
+</div>
+</div>
+<div class="progress-track">
+<div class="progress-fill bg-error" style="width: 100%"></div>
+</div>
+</div>
+<div class="glass-card rounded-xl p-md">
+<div class="flex justify-between items-start mb-md">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
+</div>
+<div>
+<h3 class="text-body-md font-headline-md">Shopping</h3>
+<span class="text-label-sm font-label-sm text-outline">₹6,000 remaining</span>
+</div>
+</div>
+<div class="text-right">
+<div class="text-body-md font-headline-md">₹4,000 <span class="text-label-sm text-outline">/ ₹10,000</span></div>
+<span class="text-label-sm font-label-sm text-tertiary">40% used</span>
+</div>
+</div>
+<div class="progress-track">
+<div class="progress-fill bg-tertiary" style="width: 40%"></div>
+</div>
+</div>
+</div>
+</main>
+<button class="fixed right-6 bottom-24 w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center z-40 active:scale-95 duration-200 transition-transform">
+<span class="material-symbols-outlined text-2xl" data-icon="add">add</span>
+</button>
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pt-3 pb-safe bg-surface/80 dark:bg-surface/80 backdrop-blur-2xl border-t border-white/10">
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline hover:text-primary-container group" href="#">
+<span class="material-symbols-outlined transition-transform group-hover:scale-110" data-icon="home">home</span>
+<span class="text-label-sm font-label-sm">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline hover:text-primary-container group" href="#">
+<span class="material-symbols-outlined transition-transform group-hover:scale-110" data-icon="receipt_long">receipt_long</span>
+<span class="text-label-sm font-label-sm">Activity</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary dark:text-secondary scale-110 duration-300 transition-transform group" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+<span class="text-label-sm font-label-sm">Budget</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline hover:text-primary-container group" href="#">
+<span class="material-symbols-outlined transition-transform group-hover:scale-110" data-icon="ads_click">ads_click</span>
+<span class="text-label-sm font-label-sm">Goals</span>
+</a>
+<a class="flex flex-col items-center justify-center text-outline dark:text-outline hover:text-primary-container group" href="#">
+<span class="material-symbols-outlined transition-transform group-hover:scale-110" data-icon="person">person</span>
+<span class="text-label-sm font-label-sm">Profile</span>
+</a>
+</nav>
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const fills = document.querySelectorAll('.progress-fill');
+            fills.forEach(fill => {
+                const targetWidth = fill.style.width;
+                fill.style.width = '0%';
+                setTimeout(() => {
+                    fill.style.width = targetWidth;
+                }, 300);
+            });
+        });
+    </script>
+</body></html>

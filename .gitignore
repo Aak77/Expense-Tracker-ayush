@@ -5,3 +5,15 @@ node_modules/
 coverage/
 build/
 dist/
+
+# Python
+__pycache__/
+*.pyc
+venv/
+*.egg-info/
+
+# Flutter
+.dart_tool/
+.packages
+.idea/
+*.iml
