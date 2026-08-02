@@ -5,12 +5,15 @@ CRUD endpoints for income/expense transactions with filtering, pagination,
 and automatic net-worth snapshot updates via background tasks.
 """
 
+import csv
+import io
 import math
 import uuid
-from datetime import date
-from typing import Optional
+from decimal import Decimal
+from datetime import date, datetime
+from typing import Optional, List
 
-from fastapi import APIRouter, BackgroundTasks, Depends, Query
+from fastapi import APIRouter, BackgroundTasks, Depends, Query, UploadFile, File, HTTPException
 from sqlalchemy import select, func, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -23,12 +26,17 @@ from app.schemas.transaction import (
     TransactionUpdate,
     TransactionResponse,
     TransactionListResponse,
+    TransactionParseResponse,
+    TransactionBulkCreate,
+    EXPENSE_CATEGORIES,
+    INCOME_CATEGORIES,
 )
 from app.services.auth_service import update_net_worth_snapshot
 from app.exceptions import (
     TransactionNotFoundError,
     InvalidTransactionTypeError,
 )
+
 
 router = APIRouter(prefix="/api/v1/transactions", tags=["Transactions"])
 
@@ -201,3 +209,255 @@ async def delete_transaction(
     background_tasks.add_task(update_net_worth_snapshot, db, current_user.id)
 
     return {"message": "Transaction deleted successfully"}
+
+
+# ─── CSV Import Utilities ──────────────────────────────────────────────────────
+
+EXPENSE_KEYWORDS = {
+    "food": ["swiggy", "zomato", "blinkit", "bigbasket", "dmart", "chai", "snacks", "dominos", "haldiram", "restaurant", "cafe", "groceries", "grocery", "mcdonald", "starbucks", "kfc", "burger", "pizza", "dine", "eat", "food", "bakery", "canteen", "sweets", "namkeen"],
+    "transport": ["uber", "ola", "metro", "petrol", "indian oil", "irctc", "rapido", "train", "flight", "cab", "taxi", "fuel", "gasoline", "shell", "hpcl", "bpcl", "toll", "fastag", "auto", "railway"],
+    "shopping": ["amazon", "flipkart", "myntra", "reliance digital", "nykaa", "croma", "electronics", "clothes", "fashion", "mall", "shopping", "retail", "zara", "h&m", "apparel", "store", "supermarket", "ajio", "meesho"],
+    "entertainment": ["netflix", "spotify", "disney", "hotstar", "bookmyshow", "prime video", "pvr", "inox", "movie", "cinema", "theatre", "concert", "show", "game", "steam", "playstation", "xbox", "pub", "bar", "club", "party"],
+    "bills": ["jio", "airtel", "broadband", "electricity", "tata power", "water bill", "gas bill", "indane", "lpg", "rent", "maintenance", "wifi", "recharge", "phone bill", "utility", "mobile bill", "insurance premium", "bescom", "act fiber", "tataplay", "dth", "society"],
+    "health": ["pharmacy", "apollo", "medicine", "doctor", "practo", "gym", "cult.fit", "health", "hospital", "clinic", "dental", "medical", "insurance", "chemist", "lab", "diagnostics", "fit"],
+    "education": ["udemy", "unacademy", "course", "books", "tuition", "school", "college", "fees", "learning", "coursera", "edx", "stationery", "class", "training"],
+    "travel": ["makemytrip", "goibibo", "oyo", "hotel", "flight", "tickets", "airbnb", "travel", "vacation", "trip", "booking", "resort", "homestay", "expedia", "agoda"],
+    "investment": ["zerodha", "mutual fund", "groww", "stock", "shares", "sip", "etf", "indmoney", "coin", "crypto", "angelone", "upstox"]
+}
+
+INCOME_KEYWORDS = {
+    "salary": ["salary", "payroll", "tcs", "infosys", "wipro", "stipend", "direct deposit", "wage", "employer", "hcl", "accenture", "cognizant"],
+    "freelance": ["upwork", "fiverr", "freelance", "consulting", "gig", "contract", "invoice", "client", "toptal"],
+    "investment": ["dividend", "interest", "fd interest", "mutual fund returns", "sbi fd", "capital gain", "payout", "redemption", "bonds", "coupon"],
+    "gift": ["gift", "birthday", "reward", "cashback", "scratch card", "bonus", "prize", "shagun"]
+}
+
+def parse_date(date_str: str) -> date:
+    date_str = date_str.strip()
+    formats = [
+        "%Y-%m-%d",
+        "%d-%m-%Y",
+        "%m/%d/%y",
+        "%m/%d/%Y",
+        "%d/%m/%Y",
+        "%d/%m/%y",
+        "%Y/%m/%d",
+    ]
+    for fmt in formats:
+        try:
+            return datetime.strptime(date_str, fmt).date()
+        except ValueError:
+            continue
+    raise ValueError(f"Could not parse date: {date_str}")
+
+def auto_categorize(description: str, explicit_type: Optional[str] = None) -> tuple[str, str]:
+    """
+    Returns (type, category) based on description and optional explicit type.
+    """
+    desc_lower = description.lower().strip() if description else ""
+    
+    # 1. Determine Type
+    txn_type = None
+    if explicit_type:
+        explicit_type_lower = explicit_type.lower().strip()
+        if explicit_type_lower in ("income", "credit", "cr", "inflow", "deposit"):
+            txn_type = "income"
+        elif explicit_type_lower in ("expense", "debit", "dr", "outflow", "withdrawal"):
+            txn_type = "expense"
+            
+    if not txn_type:
+        # Check if description strongly suggests income
+        is_income_desc = any(any(kw in desc_lower for kw in keywords) for keywords in INCOME_KEYWORDS.values())
+        is_expense_desc = any(any(kw in desc_lower for kw in keywords) for keywords in EXPENSE_KEYWORDS.values())
+        
+        if is_income_desc and not is_expense_desc:
+            txn_type = "income"
+        else:
+            txn_type = "expense"
+
+    # 2. Determine Category
+    category = "other"
+    if txn_type == "expense":
+        for cat, keywords in EXPENSE_KEYWORDS.items():
+            if any(kw in desc_lower for kw in keywords):
+                category = cat
+                break
+    else:
+        for cat, keywords in INCOME_KEYWORDS.items():
+            if any(kw in desc_lower for kw in keywords):
+                category = cat
+                break
+                
+    return txn_type, category
+
+
+# ─── Endpoints ───────────────────────────────────────────────────────────────
+
+@router.post("/parse-csv", response_model=List[TransactionParseResponse])
+async def parse_csv(
+    file: UploadFile = File(...)
+):
+    """
+    Parse uploaded CSV, identify column headers, auto-categorize transactions, 
+    and return parsed transaction details.
+    """
+    if not file.filename.endswith('.csv'):
+        raise HTTPException(status_code=400, detail="Only CSV files are allowed.")
+    
+    content = await file.read()
+    try:
+        decoded_content = content.decode('utf-8')
+    except UnicodeDecodeError:
+        try:
+            decoded_content = content.decode('latin-1')
+        except Exception:
+            raise HTTPException(status_code=400, detail="Could not decode CSV file. Please verify encoding.")
+
+    f = io.StringIO(decoded_content)
+    reader = csv.reader(f)
+    
+    try:
+        headers = next(reader)
+    except StopIteration:
+        raise HTTPException(status_code=400, detail="Empty CSV file.")
+
+    cleaned_headers = [h.strip().lower().replace("_", "").replace("-", "").replace(" ", "") for h in headers]
+
+    date_idx = -1
+    desc_idx = -1
+    amount_idx = -1
+    type_idx = -1
+    debit_idx = -1
+    credit_idx = -1
+
+    for idx, h in enumerate(cleaned_headers):
+        if h in ("date", "transactiondate", "txdate", "timestamp", "time"):
+            date_idx = idx
+        elif h in ("description", "desc", "memo", "details", "narration", "payee", "remarks", "title"):
+            desc_idx = idx
+        elif h in ("amount", "value", "price", "sum", "cost", "rupees", "inr"):
+            amount_idx = idx
+        elif h in ("type", "transactiontype"):
+            type_idx = idx
+        elif h in ("debit", "withdrawal", "outflow", "dr"):
+            debit_idx = idx
+        elif h in ("credit", "deposit", "inflow", "cr"):
+            credit_idx = idx
+
+    if date_idx == -1:
+        raise HTTPException(status_code=400, detail="Missing date column. We support 'date', 'transaction_date', etc.")
+    if desc_idx == -1:
+        raise HTTPException(status_code=400, detail="Missing description column. We support 'description', 'desc', 'narration', etc.")
+    if amount_idx == -1 and (debit_idx == -1 or credit_idx == -1):
+        raise HTTPException(status_code=400, detail="Missing amount column. We support 'amount', or separate 'debit' and 'credit' columns.")
+
+    parsed_transactions = []
+    line_number = 1
+    
+    for row in reader:
+        line_number += 1
+        if not row or all(cell.strip() == "" for cell in row):
+            continue
+            
+        max_idx = max(date_idx, desc_idx, amount_idx, type_idx, debit_idx, credit_idx)
+        if len(row) <= max_idx:
+            row = row + [""] * (max_idx - len(row) + 1)
+
+        date_str = row[date_idx]
+        try:
+            parsed_date = parse_date(date_str)
+        except Exception:
+            raise HTTPException(status_code=400, detail=f"Row {line_number}: Invalid date value '{date_str}'.")
+
+        description = row[desc_idx].strip()
+        amount = Decimal("0.0")
+        explicit_type = None
+
+        if amount_idx != -1:
+            amount_str = row[amount_idx].strip().replace(",", "")
+            if not amount_str:
+                amount_str = "0"
+            try:
+                val = Decimal(amount_str)
+                amount = abs(val)
+                if val < 0:
+                    explicit_type = "expense"
+                elif val > 0:
+                    explicit_type = "income"
+            except Exception:
+                raise HTTPException(status_code=400, detail=f"Row {line_number}: Invalid amount value '{amount_str}'.")
+        
+        if debit_idx != -1 and credit_idx != -1:
+            debit_str = row[debit_idx].strip().replace(",", "")
+            credit_str = row[credit_idx].strip().replace(",", "")
+            
+            debit_val = Decimal("0.0")
+            credit_val = Decimal("0.0")
+            
+            if debit_str:
+                try:
+                    debit_val = Decimal(debit_str)
+                except Exception:
+                    pass
+            if credit_str:
+                try:
+                    credit_val = Decimal(credit_str)
+                except Exception:
+                    pass
+
+            if debit_val > 0:
+                amount = debit_val
+                explicit_type = "expense"
+            elif credit_val > 0:
+                amount = credit_val
+                explicit_type = "income"
+
+        if type_idx != -1 and not explicit_type:
+            explicit_type = row[type_idx].strip()
+
+        inferred_type, inferred_category = auto_categorize(description, explicit_type)
+
+        parsed_transactions.append(
+            TransactionParseResponse(
+                transaction_date=parsed_date,
+                description=description,
+                amount=amount,
+                type=inferred_type,
+                category=inferred_category
+            )
+        )
+
+    return parsed_transactions
+
+
+@router.post("/bulk", response_model=List[TransactionResponse])
+async def create_transactions_bulk(
+    data: TransactionBulkCreate,
+    background_tasks: BackgroundTasks,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Create multiple transactions in a single batch."""
+    created_transactions = []
+    
+    for item in data.transactions:
+        if item.type not in ("income", "expense"):
+            raise InvalidTransactionTypeError()
+            
+        transaction = Transaction(
+            id=uuid.uuid4(),
+            user_id=current_user.id,
+            amount=item.amount,
+            type=item.type,
+            category=item.category,
+            description=item.description,
+            transaction_date=item.transaction_date,
+        )
+        db.add(transaction)
+        created_transactions.append(transaction)
+        
+    await db.flush()
+    background_tasks.add_task(update_net_worth_snapshot, db, current_user.id)
+    
+    return [TransactionResponse.model_validate(t) for t in created_transactions]
+

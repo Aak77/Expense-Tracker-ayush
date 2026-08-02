@@ -9,7 +9,7 @@ from app.config import settings
 from app.exceptions import AppException, app_exception_handler, generic_exception_handler
 
 # Import all routers
-from app.routers import auth, transactions, budgets, savings_goals, assets_liabilities, analytics, insights
+from app.routers import auth, transactions, budgets, savings_goals, assets_liabilities, analytics, insights, admin_analytics
 
 
 def create_app() -> FastAPI:
@@ -50,6 +50,7 @@ def create_app() -> FastAPI:
     app.include_router(assets_liabilities.router)
     app.include_router(analytics.router)
     app.include_router(insights.router)
+    app.include_router(admin_analytics.router)
 
     # ─── Health Check ─────────────────────────────────────────────────────
     @app.get("/health", tags=["Health"])

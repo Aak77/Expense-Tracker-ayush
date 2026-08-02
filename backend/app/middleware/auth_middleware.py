@@ -9,9 +9,12 @@ Provides two dependency functions:
 """
 
 from fastapi import Depends, Request
+from fastapi.security import HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from app.database import get_db
+
+http_bearer = HTTPBearer(auto_error=False)
 from app.services import auth_service
 from app.models.user import User
 from app.exceptions import TokenInvalidError
@@ -41,6 +44,7 @@ def _extract_token(request: Request) -> str | None:
 async def get_current_user(
     request: Request,
     db: AsyncSession = Depends(get_db),
+    token_auth: None = Depends(http_bearer),
 ) -> User:
     """
     FastAPI dependency that enforces authentication.
@@ -90,6 +94,7 @@ async def get_current_user(
 async def get_optional_user(
     request: Request,
     db: AsyncSession = Depends(get_db),
+    token_auth: None = Depends(http_bearer),
 ) -> User | None:
     """
     FastAPI dependency that returns ``None`` when no token is present,

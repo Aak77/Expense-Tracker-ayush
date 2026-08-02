@@ -10,7 +10,7 @@ from datetime import date
 from decimal import Decimal, ROUND_HALF_UP
 from typing import Optional
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, BackgroundTasks
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -18,8 +18,10 @@ from app.database import get_db
 from app.middleware.auth_middleware import get_current_user
 from app.models.user import User
 from app.models.savings_goal import SavingsGoal
+from app.models.transaction import Transaction
 from app.schemas.savings_goal import GoalCreate, GoalUpdate, GoalResponse
 from app.exceptions import GoalNotFoundError
+from app.services.auth_service import update_net_worth_snapshot
 
 router = APIRouter(prefix="/api/v1/savings-goals", tags=["Savings Goals"])
 
@@ -172,6 +174,7 @@ async def get_goal(
 async def update_goal(
     goal_id: uuid.UUID,
     data: GoalUpdate,
+    background_tasks: BackgroundTasks,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
@@ -188,10 +191,30 @@ async def update_goal(
         raise GoalNotFoundError()
 
     update_data = data.model_dump(exclude_unset=True)
+    amount_diff = Decimal("0")
+    if "current_amount" in update_data:
+        new_amt = Decimal(str(update_data["current_amount"]))
+        old_amt = Decimal(str(goal.current_amount or 0))
+        amount_diff = new_amt - old_amt
+
     for field, value in update_data.items():
         setattr(goal, field, value)
 
+    if amount_diff > 0:
+        transaction = Transaction(
+            id=uuid.uuid4(),
+            user_id=current_user.id,
+            amount=amount_diff,
+            type="expense",
+            category="investment",
+            description=f"Contribution to {goal.goal_name}",
+            transaction_date=date.today(),
+        )
+        db.add(transaction)
+        background_tasks.add_task(update_net_worth_snapshot, db, current_user.id)
+
     await db.flush()
+    await db.refresh(goal)
 
     return GoalResponse(**enrich_goal(goal))
 

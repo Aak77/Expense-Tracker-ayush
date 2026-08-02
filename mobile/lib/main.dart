@@ -10,7 +10,11 @@ import 'providers/auth_provider.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   
-  const storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage(
+    mOptions: MacOsOptions(
+      useDataProtectionKeyChain: false,
+    ),
+  );
   final apiClient = ApiClient(storage: storage);
   final authProvider = AuthProvider(apiClient: apiClient, storage: storage);
 
@@ -18,7 +22,7 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: authProvider),
-        // Add other providers here
+        Provider<ApiClient>.value(value: apiClient),
       ],
       child: const FinTrackApp(),
     ),

@@ -8,7 +8,7 @@ upserts.
 
 from datetime import datetime, timedelta, timezone, date
 from jose import jwt, JWTError, ExpiredSignatureError
-from passlib.context import CryptContext
+import bcrypt
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, delete
 from app.config import settings
@@ -16,6 +16,7 @@ from app.exceptions import TokenExpiredError, TokenInvalidError
 from app.models.user import User, RefreshToken
 from app.models.asset import Asset
 from app.models.liability import Liability, NetWorthSnapshot
+from app.models.transaction import Transaction
 import uuid
 import logging
 
@@ -23,17 +24,22 @@ logger = logging.getLogger(__name__)
 
 # ─── Password Hashing ────────────────────────────────────────────────────────
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
 
 def hash_password(password: str) -> str:
     """Hash a plaintext password with bcrypt."""
-    return pwd_context.hash(password)
+    pw_bytes = password.encode('utf-8')
+    salt = bcrypt.gensalt()
+    return bcrypt.hashpw(pw_bytes, salt).decode('utf-8')
 
 
 def verify_password(plain: str, hashed: str) -> bool:
     """Verify a plaintext password against a bcrypt hash."""
-    return pwd_context.verify(plain, hashed)
+    try:
+        pw_bytes = plain.encode('utf-8')
+        hashed_bytes = hashed.encode('utf-8')
+        return bcrypt.checkpw(pw_bytes, hashed_bytes)
+    except Exception:
+        return False
 
 
 # ─── JWT Token Creation ──────────────────────────────────────────────────────
@@ -195,7 +201,7 @@ async def update_net_worth_snapshot(
     """
     # Total assets
     asset_result = await db.execute(
-        select(func.coalesce(func.sum(Asset.current_value), 0)).where(
+        select(func.coalesce(func.sum(Asset.amount), 0)).where(
             Asset.user_id == user_id
         )
     )
@@ -203,13 +209,30 @@ async def update_net_worth_snapshot(
 
     # Total liabilities
     liability_result = await db.execute(
-        select(func.coalesce(func.sum(Liability.current_balance), 0)).where(
+        select(func.coalesce(func.sum(Liability.amount), 0)).where(
             Liability.user_id == user_id
         )
     )
     total_liabilities = float(liability_result.scalar())
 
-    net_worth = total_assets - total_liabilities
+    if total_assets == 0.0 and total_liabilities == 0.0:
+        # Fallback: compute net worth as all-time income minus all-time expenses
+        all_income_result = await db.execute(
+            select(func.coalesce(func.sum(Transaction.amount), 0)).where(
+                Transaction.user_id == user_id,
+                Transaction.type == "income",
+            )
+        )
+        all_expense_result = await db.execute(
+            select(func.coalesce(func.sum(Transaction.amount), 0)).where(
+                Transaction.user_id == user_id,
+                Transaction.type == "expense",
+            )
+        )
+        net_worth = float(all_income_result.scalar()) - float(all_expense_result.scalar())
+    else:
+        net_worth = total_assets - total_liabilities
+
     snapshot_date = date.today().replace(day=1)
 
     # Check for existing snapshot this month
@@ -225,7 +248,6 @@ async def update_net_worth_snapshot(
         snapshot.total_assets = total_assets
         snapshot.total_liabilities = total_liabilities
         snapshot.net_worth = net_worth
-        snapshot.updated_at = datetime.now(timezone.utc)
     else:
         # Create new
         snapshot = NetWorthSnapshot(

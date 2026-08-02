@@ -1,60 +1,109 @@
-import './style.css'
-import typescriptLogo from './assets/typescript.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import { setupCounter } from './counter.ts'
+import './style.css';
+import { initDashboard } from './dashboard.js';
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-<section id="center">
-  <div class="hero">
-    <img src="${heroImg}" class="base" width="170" height="179">
-    <img src="${typescriptLogo}" class="framework" alt="TypeScript logo"/>
-    <img src="${viteLogo}" class="vite" alt="Vite logo" />
-  </div>
-  <div>
-    <h1>Get started</h1>
-    <p>Edit <code>src/main.ts</code> and save to test <code>HMR</code></p>
-  </div>
-  <button id="counter" type="button" class="counter"></button>
-</section>
+<div class="dashboard" id="dashboard">
+  <!-- Header -->
+  <header class="dashboard-header">
+    <h1>FinTrack Analytics Dashboard</h1>
+    <div class="header-meta">
+      <span class="header-badge"><span class="dot"></span> Live Data</span>
+      <span class="header-badge" id="last-updated">Loading...</span>
+    </div>
+  </header>
 
-<div class="ticks"></div>
+  <!-- KPI Summary Cards -->
+  <section class="kpi-grid" id="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Total Users</div>
+      <div class="kpi-value accent" id="kpi-users">—</div>
+      <div class="kpi-sub" id="kpi-active-users"></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Total Transactions</div>
+      <div class="kpi-value accent" id="kpi-transactions">—</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Total Income</div>
+      <div class="kpi-value income" id="kpi-income">—</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Total Expenses</div>
+      <div class="kpi-value expense" id="kpi-expenses">—</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Avg Savings Rate</div>
+      <div class="kpi-value accent" id="kpi-savings-rate">—</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Budget Adoption</div>
+      <div class="kpi-value accent" id="kpi-budget-adoption">—</div>
+      <div class="kpi-sub" id="kpi-goal-rate"></div>
+    </div>
+  </section>
 
-<section id="next-steps">
-  <div id="docs">
-    <svg class="icon" role="presentation" aria-hidden="true"><use href="/icons.svg#documentation-icon"></use></svg>
-    <h2>Documentation</h2>
-    <p>Your questions, answered</p>
-    <ul>
-      <li>
-        <a href="https://vite.dev/" target="_blank">
-          <img class="logo" src="${viteLogo}" alt="" />
-          Explore Vite
-        </a>
-      </li>
-      <li>
-        <a href="https://www.typescriptlang.org" target="_blank">
-          <img class="button-icon" src="${typescriptLogo}" alt="">
-          Learn more
-        </a>
-      </li>
-    </ul>
-  </div>
-  <div id="social">
-    <svg class="icon" role="presentation" aria-hidden="true"><use href="/icons.svg#social-icon"></use></svg>
-    <h2>Connect with us</h2>
-    <p>Join the Vite community</p>
-    <ul>
-      <li><a href="https://github.com/vitejs/vite" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#github-icon"></use></svg>GitHub</a></li>
-      <li><a href="https://chat.vite.dev/" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#discord-icon"></use></svg>Discord</a></li>
-      <li><a href="https://x.com/vite_js" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#x-icon"></use></svg>X.com</a></li>
-      <li><a href="https://bsky.app/profile/vite.dev" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#bluesky-icon"></use></svg>Bluesky</a></li>
-    </ul>
-  </div>
-</section>
+  <!-- Charts Row 1 -->
+  <div class="section-title">Growth & Revenue Trends</div>
+  <section class="charts-grid">
+    <div class="chart-card" style="animation-delay: 0.1s;">
+      <h3>User Growth</h3>
+      <div class="chart-canvas-wrapper"><canvas id="chart-user-growth"></canvas></div>
+    </div>
+    <div class="chart-card" style="animation-delay: 0.2s;">
+      <h3>Income vs Expenses</h3>
+      <div class="chart-canvas-wrapper"><canvas id="chart-income-expense"></canvas></div>
+    </div>
+  </section>
 
-<div class="ticks"></div>
-<section id="spacer"></section>
-`
+  <!-- Charts Row 2 -->
+  <div class="section-title">Spending Analysis</div>
+  <section class="charts-grid">
+    <div class="chart-card" style="animation-delay: 0.3s;">
+      <h3>Spending by Category</h3>
+      <div class="chart-canvas-wrapper"><canvas id="chart-spending-category"></canvas></div>
+    </div>
+    <div class="chart-card" style="animation-delay: 0.4s;">
+      <h3>Top Merchants</h3>
+      <div class="chart-canvas-wrapper"><canvas id="chart-top-merchants"></canvas></div>
+    </div>
+  </section>
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+  <!-- Charts Row 3 -->
+  <div class="section-title">User Segments</div>
+  <section class="charts-grid">
+    <div class="chart-card" style="animation-delay: 0.5s;">
+      <h3>User Activity Distribution</h3>
+      <div class="chart-canvas-wrapper"><canvas id="chart-activity-histogram"></canvas></div>
+    </div>
+    <div class="chart-card" style="animation-delay: 0.6s;">
+      <h3>Asset Type Distribution</h3>
+      <div class="chart-canvas-wrapper"><canvas id="chart-asset-types"></canvas></div>
+    </div>
+  </section>
+
+  <!-- Cohort Heatmap -->
+  <div class="section-title">Cohort Retention Analysis</div>
+  <section class="charts-grid">
+    <div class="chart-card full-width" style="animation-delay: 0.7s;">
+      <h3>Monthly Cohort Retention</h3>
+      <div class="chart-canvas-wrapper" id="cohort-chart-container">
+        <canvas id="chart-cohort-retention"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- Anomaly Detection -->
+  <div class="section-title">Anomaly Detection</div>
+  <section class="charts-grid">
+    <div class="chart-card full-width" style="animation-delay: 0.8s;">
+      <h3>Largest Expense Transactions (Outlier Review)</h3>
+      <div id="anomaly-table-container">
+        <p style="color: var(--text-muted); text-align: center; padding: 40px;">Loading anomalies...</p>
+      </div>
+    </div>
+  </section>
+</div>
+`;
+
+// Initialize the dashboard (fetches live data from API)
+initDashboard();

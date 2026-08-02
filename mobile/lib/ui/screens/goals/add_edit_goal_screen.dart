@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:dio/dio.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../widgets/common/glass_card.dart';
-import '../../widgets/common/primary_button.dart';
+import '../../../core/theme/glass_styles.dart';
+import '../../../core/network/api_client.dart';
+import '../../../core/network/api_constants.dart';
 
 class AddEditGoalScreen extends StatefulWidget {
   const AddEditGoalScreen({super.key});
@@ -14,16 +17,103 @@ class AddEditGoalScreen extends StatefulWidget {
 }
 
 class _AddEditGoalScreenState extends State<AddEditGoalScreen> {
-  final _goalNameController = TextEditingController(text: 'New Tesla Model 3');
-  final _targetAmountController = TextEditingController(text: '4500000');
-  final _currentAmountController = TextEditingController(text: '2925000');
-  
+  final _nameController = TextEditingController();
+  final _amountController = TextEditingController();
+  final _currentAmountController = TextEditingController();
+  DateTime? _selectedDate;
+  bool _isSaving = false;
+
   @override
   void dispose() {
-    _goalNameController.dispose();
-    _targetAmountController.dispose();
+    _nameController.dispose();
+    _amountController.dispose();
     _currentAmountController.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickDate() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now().add(const Duration(days: 30)),
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(const Duration(days: 365 * 10)),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.dark(
+              primary: AppColors.primary,
+              surface: AppColors.surface,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null) {
+      setState(() => _selectedDate = picked);
+    }
+  }
+
+  Future<void> _saveGoal() async {
+    final name = _nameController.text.trim();
+    if (name.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter a goal name')),
+      );
+      return;
+    }
+
+    final amountText = _amountController.text.trim();
+    final target = double.tryParse(amountText);
+    if (target == null || target <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter a valid target amount')),
+      );
+      return;
+    }
+    
+    double current = 0;
+    if (_currentAmountController.text.trim().isNotEmpty) {
+      current = double.tryParse(_currentAmountController.text.trim()) ?? 0;
+    }
+
+    setState(() => _isSaving = true);
+
+    try {
+      final apiClient = context.read<ApiClient>();
+      await apiClient.dio.post(
+        '${ApiConstants.savingsGoals}/',
+        data: {
+          'goal_name': name,
+          'target_amount': target,
+          'current_amount': current,
+          if (_selectedDate != null)
+            'target_date': DateFormat('yyyy-MM-dd').format(_selectedDate!),
+        },
+      );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Goal created!'),
+            backgroundColor: AppColors.secondary,
+          ),
+        );
+        context.pop(true);
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isSaving = false);
+        String msg = 'Failed to save goal';
+        if (e is DioException && e.response?.data != null) {
+          final detail = e.response?.data['detail'];
+          if (detail != null) msg = detail.toString();
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(msg), backgroundColor: AppColors.error),
+        );
+      }
+    }
   }
 
   @override
@@ -34,280 +124,194 @@ class _AddEditGoalScreenState extends State<AddEditGoalScreen> {
         backgroundColor: AppColors.surface.withOpacity(0.8),
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.primary),
-          onPressed: () => context.pop(),
+          icon: const Icon(Icons.close, color: AppColors.onSurface),
+          onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Edit Savings Goal',
+          'New Goal',
           style: GoogleFonts.inter(
             fontSize: 20,
             fontWeight: FontWeight.bold,
             color: AppColors.primary,
           ),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.delete_outline, color: AppColors.primary),
-            onPressed: () {},
-          ),
-          const SizedBox(width: 8),
-        ],
       ),
-      body: Stack(
-        children: [
-          // Background visual decoration
-          Positioned(
-            bottom: -100,
-            left: -100,
-            child: Container(
-              width: 256,
-              height: 256,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.secondary.withOpacity(0.1),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Goal Name
+            Text(
+              'Goal Name',
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: AppColors.onSurfaceVariant,
               ),
             ),
-          ),
-          Positioned(
-            top: -100,
-            right: -100,
-            child: Container(
-              width: 256,
-              height: 256,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.primary.withOpacity(0.1),
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: GlassStyles.glassCardDecoration.copyWith(
+                borderRadius: BorderRadius.circular(12),
               ),
-            ),
-          ),
-          SingleChildScrollView(
-            padding: const EdgeInsets.only(left: 20, right: 20, top: 24, bottom: 48),
-            child: Column(
-              children: [
-                _buildProgressSummary(),
-                const SizedBox(height: 32),
-                _buildForm(),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildProgressSummary() {
-    return GlassCard(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
-                  shape: BoxShape.circle,
+              child: TextField(
+                controller: _nameController,
+                style: GoogleFonts.inter(color: AppColors.onSurface, fontSize: 16),
+                decoration: InputDecoration(
+                  hintText: 'e.g. Dream House, Vacation',
+                  hintStyle: GoogleFonts.inter(color: AppColors.outline),
+                  border: InputBorder.none,
+                  icon: const Icon(Icons.flag_outlined, color: AppColors.primary),
                 ),
-                child: const Icon(Icons.ads_click, color: AppColors.primary),
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+            ),
+            const SizedBox(height: 24),
+
+            // Target Amount
+            Text(
+              'Target Amount',
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: AppColors.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: GlassStyles.glassCardDecoration.copyWith(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
                 children: [
                   Text(
-                    'PROGRESS',
+                    '₹',
                     style: GoogleFonts.inter(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.outline,
-                      letterSpacing: 1.2,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.secondary,
                     ),
                   ),
-                  Text(
-                    '65%',
-                    style: GoogleFonts.inter(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.secondary,
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: TextField(
+                      controller: _amountController,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      style: GoogleFonts.inter(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.onSurface,
+                        letterSpacing: -0.5,
+                      ),
+                      decoration: InputDecoration(
+                        hintText: '0.00',
+                        hintStyle: GoogleFonts.inter(color: AppColors.outline),
+                        border: InputBorder.none,
+                      ),
                     ),
                   ),
                 ],
               ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: const LinearProgressIndicator(
-              value: 0.65,
-              minHeight: 8,
-              backgroundColor: Colors.white10,
-              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildForm() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildTextField(
-          label: 'Goal Name',
-          controller: _goalNameController,
-          hintText: 'What are you saving for?',
-          suffixIcon: Icons.edit_outlined,
-        ),
-        const SizedBox(height: 16),
-        Row(
-          children: [
-            Expanded(
-              child: _buildTextField(
-                label: 'Target Amount (₹)',
-                controller: _targetAmountController,
-                hintText: '0.00',
-                keyboardType: TextInputType.number,
-                prefixIcon: Icons.currency_rupee,
-                prefixColor: AppColors.primary,
+            const SizedBox(height: 24),
+            
+            // Current Saved Amount
+            Text(
+              'Already Saved (Optional)',
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: AppColors.onSurfaceVariant,
               ),
             ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _buildTextField(
-                label: 'Current Amount (₹)',
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: GlassStyles.glassCardDecoration.copyWith(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: TextField(
                 controller: _currentAmountController,
-                hintText: '0.00',
-                keyboardType: TextInputType.number,
-                prefixIcon: Icons.currency_rupee,
-                prefixColor: AppColors.secondary,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                style: GoogleFonts.inter(color: AppColors.onSurface, fontSize: 16),
+                decoration: InputDecoration(
+                  hintText: '0.00',
+                  hintStyle: GoogleFonts.inter(color: AppColors.outline),
+                  border: InputBorder.none,
+                  icon: const Icon(Icons.account_balance_wallet_outlined, color: AppColors.secondary),
+                ),
               ),
+            ),
+            const SizedBox(height: 24),
+
+            // Target Date
+            Text(
+              'Target Date (Optional)',
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: AppColors.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 8),
+            GestureDetector(
+              onTap: _pickDate,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                decoration: GlassStyles.glassCardDecoration.copyWith(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.calendar_today, color: AppColors.primary),
+                    const SizedBox(width: 12),
+                    Text(
+                      _selectedDate != null
+                          ? DateFormat('MMM dd, yyyy').format(_selectedDate!)
+                          : 'Select a deadline',
+                      style: GoogleFonts.inter(
+                        color: _selectedDate != null ? AppColors.onSurface : AppColors.outline,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            
+            const SizedBox(height: 48),
+
+            // Create Goal Button
+            ElevatedButton(
+              onPressed: _isSaving ? null : _saveGoal,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primaryContainer,
+                foregroundColor: AppColors.onPrimaryContainer,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                elevation: 10,
+              ),
+              child: _isSaving
+                  ? const SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(strokeWidth: 2.5),
+                    )
+                  : Text(
+                      'Create Goal',
+                      style: GoogleFonts.inter(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
             ),
           ],
         ),
-        const SizedBox(height: 16),
-        _buildTextField(
-          label: 'Target Date',
-          controller: TextEditingController(text: '2025-12-31'),
-          hintText: 'YYYY-MM-DD',
-          suffixIcon: Icons.calendar_today_outlined,
-          readOnly: true,
-        ),
-        const SizedBox(height: 16),
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: AppColors.primary.withOpacity(0.05),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.primary.withOpacity(0.2)),
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Icon(Icons.info_outline, color: AppColors.primaryContainer),
-              const SizedBox(width: 16),
-              Expanded(
-                child: RichText(
-                  text: TextSpan(
-                    style: GoogleFonts.inter(
-                      fontSize: 14,
-                      color: AppColors.onSurfaceVariant,
-                      height: 1.5,
-                    ),
-                    children: const [
-                      TextSpan(text: 'To reach your goal by Dec 2025, you\'ll need to save approximately '),
-                      TextSpan(
-                        text: '₹82,895',
-                        style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
-                      ),
-                      TextSpan(text: ' per month.'),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 32),
-        PrimaryButton(
-          text: 'Save Goal',
-          onPressed: () {},
-          icon: Icons.check_circle_outline,
-        ),
-        const SizedBox(height: 16),
-        Center(
-          child: Text(
-            'All data is encrypted and stored securely.',
-            style: GoogleFonts.inter(
-              fontSize: 12,
-              color: AppColors.outline,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTextField({
-    required String label,
-    required TextEditingController controller,
-    required String hintText,
-    IconData? suffixIcon,
-    IconData? prefixIcon,
-    Color? prefixColor,
-    TextInputType? keyboardType,
-    bool readOnly = false,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 4, bottom: 8),
-          child: Text(
-            label,
-            style: GoogleFonts.inter(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: AppColors.onSurfaceVariant,
-            ),
-          ),
-        ),
-        TextField(
-          controller: controller,
-          keyboardType: keyboardType,
-          readOnly: readOnly,
-          style: GoogleFonts.inter(
-            fontSize: 16,
-            color: AppColors.onSurface,
-          ),
-          decoration: InputDecoration(
-            hintText: hintText,
-            hintStyle: GoogleFonts.inter(color: AppColors.outline.withOpacity(0.5)),
-            filled: true,
-            fillColor: AppColors.surfaceContainer,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.primary),
-            ),
-            prefixIcon: prefixIcon != null
-                ? Icon(prefixIcon, color: prefixColor ?? AppColors.onSurface)
-                : null,
-            suffixIcon: suffixIcon != null
-                ? Icon(suffixIcon, color: AppColors.outline)
-                : null,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          ),
-        ),
-      ],
+      ),
     );
   }
 }

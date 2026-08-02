@@ -1,15 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../providers/auth_provider.dart';
 import '../../widgets/common/glass_card.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
+  String _getUserInitials(String? name) {
+    if (name == null || name.isEmpty) return '??';
+    final parts = name.split(' ');
+    if (parts.length >= 2) {
+      return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+    }
+    return parts[0][0].toUpperCase();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final auth = context.watch<AuthProvider>();
+    final user = auth.user;
+    final userName = user?['name']?.toString() ?? 'User';
+    final userEmail = user?['email']?.toString() ?? '';
+    final initials = _getUserInitials(userName);
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -26,7 +43,7 @@ class ProfileScreen extends StatelessWidget {
               ),
               child: Center(
                 child: Text(
-                  'JD',
+                  initials,
                   style: GoogleFonts.inter(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
@@ -85,7 +102,7 @@ class ProfileScreen extends StatelessWidget {
             padding: const EdgeInsets.only(left: 20, right: 20, top: 24, bottom: 100),
             child: Column(
               children: [
-                _buildProfileHeader(context),
+                _buildProfileHeader(context, userName, userEmail, initials),
                 const SizedBox(height: 32),
                 _buildAccountSection(context),
                 const SizedBox(height: 24),
@@ -93,10 +110,10 @@ class ProfileScreen extends StatelessWidget {
                 const SizedBox(height: 24),
                 _buildDataSection(),
                 const SizedBox(height: 24),
-                _buildDangerZone(),
+                _buildDangerZone(context),
                 const SizedBox(height: 32),
                 Text(
-                  'FinTrack Version 2.4.1\nManaged with Precision',
+                  'FinTrack Version 1.0.0\nManaged with Precision',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.inter(
                     fontSize: 12,
@@ -111,7 +128,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileHeader(BuildContext context) {
+  Widget _buildProfileHeader(BuildContext context, String name, String email, String initials) {
     return Column(
       children: [
         Stack(
@@ -130,7 +147,7 @@ class ProfileScreen extends StatelessWidget {
               ),
               child: Center(
                 child: Text(
-                  'JD',
+                  initials,
                   style: GoogleFonts.inter(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
@@ -166,7 +183,7 @@ class ProfileScreen extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         Text(
-          'John Doe',
+          name,
           style: GoogleFonts.inter(
             fontSize: 24,
             fontWeight: FontWeight.bold,
@@ -175,7 +192,7 @@ class ProfileScreen extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          'john.doe@fintrack.app',
+          email,
           style: GoogleFonts.inter(
             fontSize: 14,
             color: AppColors.outline,
@@ -246,14 +263,20 @@ class ProfileScreen extends StatelessWidget {
               _buildListItem(
                 icon: Icons.payments_outlined,
                 title: 'Currency',
-                subtitle: 'USD (\$)',
+                subtitle: 'INR (₹)',
+                onTap: () {},
+              ),
+              const Divider(height: 1, color: Colors.white10),
+              _buildListItem(
+                icon: Icons.dark_mode_outlined,
+                title: 'Appearance',
+                subtitle: 'Dark Mode',
                 onTap: () {},
               ),
               const Divider(height: 1, color: Colors.white10),
               _buildListItem(
                 icon: Icons.notifications_active_outlined,
                 title: 'Notifications',
-                trailingText: 'On',
                 onTap: () {},
               ),
             ],
@@ -270,7 +293,7 @@ class ProfileScreen extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(left: 4, bottom: 8),
           child: Text(
-            'DATA',
+            'DATA & PRIVACY',
             style: GoogleFonts.inter(
               fontSize: 12,
               fontWeight: FontWeight.w600,
@@ -281,18 +304,27 @@ class ProfileScreen extends StatelessWidget {
         ),
         GlassCard(
           padding: EdgeInsets.zero,
-          child: _buildListItem(
-            icon: Icons.file_download_outlined,
-            title: 'CSV Export',
-            trailingIcon: Icons.download_outlined,
-            onTap: () {},
+          child: Column(
+            children: [
+              _buildListItem(
+                icon: Icons.file_download_outlined,
+                title: 'Export Data',
+                onTap: () {},
+              ),
+              const Divider(height: 1, color: Colors.white10),
+              _buildListItem(
+                icon: Icons.security_outlined,
+                title: 'Privacy Policy',
+                onTap: () {},
+              ),
+            ],
           ),
         ),
       ],
     );
   }
 
-  Widget _buildDangerZone() {
+  Widget _buildDangerZone(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -314,18 +346,33 @@ class ProfileScreen extends StatelessWidget {
             children: [
               _buildListItem(
                 icon: Icons.logout,
-                title: 'Logout',
                 iconColor: AppColors.error,
-                textColor: AppColors.onSurface,
-                onTap: () {},
-              ),
-              const Divider(height: 1, color: Colors.white10),
-              _buildListItem(
-                icon: Icons.delete_forever,
-                title: 'Delete Account',
-                iconColor: AppColors.error,
-                textColor: AppColors.error,
-                onTap: () {},
+                title: 'Log Out',
+                titleColor: AppColors.error,
+                showArrow: false,
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      backgroundColor: AppColors.surfaceContainerHigh,
+                      title: Text('Log Out', style: GoogleFonts.inter(color: AppColors.onSurface)),
+                      content: Text('Are you sure you want to log out?', style: GoogleFonts.inter(color: AppColors.onSurfaceVariant)),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text('Cancel', style: GoogleFonts.inter(color: AppColors.outline)),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            context.read<AuthProvider>().logout();
+                          },
+                          child: Text('Log Out', style: GoogleFonts.inter(color: AppColors.error)),
+                        ),
+                      ],
+                    ),
+                  );
+                },
               ),
             ],
           ),
@@ -338,64 +385,65 @@ class ProfileScreen extends StatelessWidget {
     required IconData icon,
     required String title,
     String? subtitle,
-    String? trailingText,
-    IconData trailingIcon = Icons.chevron_right,
     Color? iconColor,
-    Color? textColor,
+    Color? titleColor,
+    bool showArrow = true,
     required VoidCallback onTap,
   }) {
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: (iconColor ?? AppColors.secondary).withOpacity(0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(icon, color: iconColor ?? AppColors.secondary, size: 20),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: GoogleFonts.inter(
-                      fontSize: 16,
-                      color: textColor ?? AppColors.onSurface,
-                    ),
-                  ),
-                  if (subtitle != null) ...[
-                    const SizedBox(height: 2),
-                    Text(
-                      subtitle,
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        color: AppColors.outline,
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-            if (trailingText != null) ...[
-              Text(
-                trailingText,
-                style: GoogleFonts.inter(
-                  fontSize: 12,
-                  color: AppColors.secondary,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: (iconColor ?? AppColors.primary).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  icon,
+                  color: iconColor ?? AppColors.primary,
+                  size: 20,
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: GoogleFonts.inter(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: titleColor ?? AppColors.onSurface,
+                      ),
+                    ),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        subtitle,
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          color: AppColors.outline,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              if (showArrow)
+                const Icon(
+                  Icons.chevron_right,
+                  color: AppColors.outline,
+                  size: 20,
+                ),
             ],
-            Icon(trailingIcon, color: iconColor ?? AppColors.outline),
-          ],
+          ),
         ),
       ),
     );

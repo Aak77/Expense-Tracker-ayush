@@ -328,7 +328,7 @@ class TransactionDetailScreen extends StatelessWidget {
                 ),
               ),
               style: OutlinedButton.styleFrom(
-                minimumSize: const Size.infinity,
+                minimumSize: const Size(double.infinity, 54),
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 side: const BorderSide(color: AppColors.primaryContainer),
                 shape: RoundedRectangleBorder(
@@ -349,7 +349,7 @@ class TransactionDetailScreen extends StatelessWidget {
                 ),
               ),
               style: OutlinedButton.styleFrom(
-                minimumSize: const Size.infinity,
+                minimumSize: const Size(double.infinity, 54),
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 side: BorderSide(color: AppColors.error.withOpacity(0.3)),
                 shape: RoundedRectangleBorder(

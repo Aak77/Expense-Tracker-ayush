@@ -2,10 +2,12 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 import 'package:fintrack_mobile/core/theme/app_colors.dart';
 import 'package:fintrack_mobile/ui/widgets/common/glass_card.dart';
 import 'package:fintrack_mobile/ui/widgets/common/primary_button.dart';
+import 'package:fintrack_mobile/providers/auth_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -18,12 +20,41 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
+  bool _isLoading = false;
+  String? _errorMessage;
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _handleLogin() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+
+    if (email.isEmpty || password.isEmpty) {
+      setState(() => _errorMessage = 'Please enter email and password');
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    final authProvider = context.read<AuthProvider>();
+    final error = await authProvider.login(email, password);
+
+    if (mounted) {
+      setState(() => _isLoading = false);
+      if (error == null) {
+        context.go('/dashboard');
+      } else {
+        setState(() => _errorMessage = error);
+      }
+    }
   }
 
   @override
@@ -99,31 +130,50 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 24),
                     Text(
-                      'FinTrack',
+                      'Welcome Back',
                       style: GoogleFonts.inter(
-                        fontSize: 32,
-                        fontWeight: FontWeight.w700,
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
                         color: AppColors.onSurface,
-                        letterSpacing: -0.5,
                       ),
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Manage your wealth with precision',
+                      'Sign in to continue tracking your finances',
                       style: GoogleFonts.inter(
-                        fontSize: 16,
+                        fontSize: 14,
                         color: AppColors.onSurfaceVariant,
                       ),
                     ),
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 48),
 
-                    // Login Form Card
+                    // Login Form
                     GlassCard(
                       padding: const EdgeInsets.all(24),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Email Field
+                          // Error message
+                          if (_errorMessage != null) ...[
+                            Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: AppColors.errorContainer.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(color: AppColors.error.withOpacity(0.3)),
+                              ),
+                              child: Text(
+                                _errorMessage!,
+                                style: GoogleFonts.inter(
+                                  fontSize: 13,
+                                  color: AppColors.error,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                          ],
+
                           Text(
                             'Email',
                             style: GoogleFonts.inter(
@@ -135,13 +185,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           const SizedBox(height: 8),
                           _buildTextField(
                             controller: _emailController,
-                            hintText: 'name@example.com',
-                            icon: Icons.mail_outline,
+                            hintText: 'your@email.com',
+                            icon: Icons.email_outlined,
                             keyboardType: TextInputType.emailAddress,
                           ),
                           const SizedBox(height: 24),
-
-                          // Password Field
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -190,9 +238,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           PrimaryButton(
                             text: 'Login',
                             icon: Icons.arrow_forward,
-                            onPressed: () {
-                              context.go('/dashboard');
-                            },
+                            isLoading: _isLoading,
+                            onPressed: _handleLogin,
                           ),
                         ],
                       ),

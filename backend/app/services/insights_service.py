@@ -96,8 +96,8 @@ async def generate_insights(
         select(func.coalesce(func.sum(Transaction.amount), 0)).where(
             Transaction.user_id == user_id,
             Transaction.type == "expense",
-            Transaction.date >= first_day,
-            Transaction.date <= last_day,
+            Transaction.transaction_date >= first_day,
+            Transaction.transaction_date <= last_day,
         )
     )
     cur_expenses = float(cur_expense_result.scalar())
@@ -106,8 +106,8 @@ async def generate_insights(
         select(func.coalesce(func.sum(Transaction.amount), 0)).where(
             Transaction.user_id == user_id,
             Transaction.type == "income",
-            Transaction.date >= first_day,
-            Transaction.date <= last_day,
+            Transaction.transaction_date >= first_day,
+            Transaction.transaction_date <= last_day,
         )
     )
     cur_income = float(cur_income_result.scalar())
@@ -117,8 +117,8 @@ async def generate_insights(
         select(func.coalesce(func.sum(Transaction.amount), 0)).where(
             Transaction.user_id == user_id,
             Transaction.type == "expense",
-            Transaction.date >= prev_first,
-            Transaction.date <= prev_last,
+            Transaction.transaction_date >= prev_first,
+            Transaction.transaction_date <= prev_last,
         )
     )
     prev_expenses = float(prev_expense_result.scalar())
@@ -160,8 +160,8 @@ async def generate_insights(
         .where(
             Transaction.user_id == user_id,
             Transaction.type == "expense",
-            Transaction.date >= first_day,
-            Transaction.date <= last_day,
+            Transaction.transaction_date >= first_day,
+            Transaction.transaction_date <= last_day,
         )
         .group_by(Transaction.category)
         .order_by(desc("total"))
@@ -229,17 +229,27 @@ async def generate_insights(
     budgets = budget_result.scalars().all()
 
     for b in budgets:
-        spent_result = await db.execute(
-            select(func.coalesce(func.sum(Transaction.amount), 0)).where(
-                Transaction.user_id == user_id,
-                Transaction.type == "expense",
-                Transaction.category == b.category,
-                Transaction.date >= first_day,
-                Transaction.date <= last_day,
+        if b.category.lower() == "global":
+            spent_result = await db.execute(
+                select(func.coalesce(func.sum(Transaction.amount), 0)).where(
+                    Transaction.user_id == user_id,
+                    Transaction.type == "expense",
+                    Transaction.transaction_date >= first_day,
+                    Transaction.transaction_date <= last_day,
+                )
             )
-        )
+        else:
+            spent_result = await db.execute(
+                select(func.coalesce(func.sum(Transaction.amount), 0)).where(
+                    Transaction.user_id == user_id,
+                    Transaction.type == "expense",
+                    Transaction.category == b.category,
+                    Transaction.transaction_date >= first_day,
+                    Transaction.transaction_date <= last_day,
+                )
+            )
         spent = float(spent_result.scalar())
-        limit_amt = float(b.amount)
+        limit_amt = float(b.monthly_limit)
         if limit_amt > 0:
             utilization = (spent / limit_amt) * 100
             if utilization > 85:
@@ -304,14 +314,14 @@ async def generate_insights(
     trend_result = await db.execute(
         select(
             Transaction.category,
-            extract("year", Transaction.date).label("yr"),
-            extract("month", Transaction.date).label("mo"),
+            extract("year", Transaction.transaction_date).label("yr"),
+            extract("month", Transaction.transaction_date).label("mo"),
             func.sum(Transaction.amount).label("total"),
         )
         .where(
             Transaction.user_id == user_id,
             Transaction.type == "expense",
-            Transaction.date >= three_months_ago,
+            Transaction.transaction_date >= three_months_ago,
         )
         .group_by(Transaction.category, "yr", "mo")
         .order_by(Transaction.category, "yr", "mo")
@@ -357,10 +367,10 @@ async def generate_insights(
                         "id": f"insight_008_{str(g.id)[:8]}",
                         "type": "positive",
                         "icon": "flag",
-                        "title": f"🎯 {g.name}: {m}% reached!",
+                        "title": f"🎯 {g.goal_name}: {m}% reached!",
                         "description": (
                             f"You've saved {format_inr(current)} of your "
-                            f"{format_inr(target)} goal for {g.name}."
+                            f"{format_inr(target)} goal for {g.goal_name}."
                         ),
                         "action": None,
                     })
@@ -376,8 +386,8 @@ async def generate_insights(
             .where(
                 Transaction.user_id == user_id,
                 Transaction.type == "expense",
-                Transaction.date >= first_day,
-                Transaction.date <= last_day,
+                Transaction.transaction_date >= first_day,
+                Transaction.transaction_date <= last_day,
             )
             .group_by(Transaction.category)
         )

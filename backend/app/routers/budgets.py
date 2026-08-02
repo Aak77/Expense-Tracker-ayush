@@ -32,15 +32,25 @@ async def _get_current_spending(
 ) -> Decimal:
     """Sum of expenses for a given category in the current month."""
     today = date.today()
-    stmt = select(func.coalesce(func.sum(Transaction.amount), 0)).where(
-        and_(
-            Transaction.user_id == user_id,
-            Transaction.type == "expense",
-            Transaction.category == category,
-            extract("year", Transaction.transaction_date) == today.year,
-            extract("month", Transaction.transaction_date) == today.month,
+    if category.lower() == "global":
+        stmt = select(func.coalesce(func.sum(Transaction.amount), 0)).where(
+            and_(
+                Transaction.user_id == user_id,
+                Transaction.type == "expense",
+                extract("year", Transaction.transaction_date) == today.year,
+                extract("month", Transaction.transaction_date) == today.month,
+            )
         )
-    )
+    else:
+        stmt = select(func.coalesce(func.sum(Transaction.amount), 0)).where(
+            and_(
+                Transaction.user_id == user_id,
+                Transaction.type == "expense",
+                Transaction.category == category,
+                extract("year", Transaction.transaction_date) == today.year,
+                extract("month", Transaction.transaction_date) == today.month,
+            )
+        )
     result = await db.execute(stmt)
     return Decimal(str(result.scalar()))
 

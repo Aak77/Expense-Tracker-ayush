@@ -2,8 +2,10 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../providers/auth_provider.dart';
 import '../../widgets/common/glass_card.dart';
 import '../../widgets/common/primary_button.dart';
 
@@ -21,6 +23,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _confirmPasswordController = TextEditingController();
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+  bool _isLoading = false;
+  String? _errorMessage;
 
   @override
   void dispose() {
@@ -115,6 +119,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        if (_errorMessage != null) ...[
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: AppColors.errorContainer.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: AppColors.error.withOpacity(0.3)),
+                            ),
+                            child: Text(
+                              _errorMessage!,
+                              style: GoogleFonts.inter(
+                                fontSize: 13,
+                                color: AppColors.error,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                        ],
                         _buildLabel('Full Name'),
                         const SizedBox(height: 8),
                         _buildTextField(
@@ -178,8 +201,37 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                         PrimaryButton(
                           text: 'Create Account',
-                          onPressed: () {
-                            context.go('/dashboard');
+                          isLoading: _isLoading,
+                          onPressed: () async {
+                            final name = _fullNameController.text.trim();
+                            final email = _emailController.text.trim();
+                            final password = _passwordController.text;
+                            final confirm = _confirmPasswordController.text;
+
+                            if (name.isEmpty || email.isEmpty || password.isEmpty) {
+                              setState(() => _errorMessage = 'Please fill in all fields');
+                              return;
+                            }
+                            if (password.length < 8) {
+                              setState(() => _errorMessage = 'Password must be at least 8 characters');
+                              return;
+                            }
+                            if (password != confirm) {
+                              setState(() => _errorMessage = 'Passwords do not match');
+                              return;
+                            }
+
+                            setState(() { _isLoading = true; _errorMessage = null; });
+                            final authProvider = context.read<AuthProvider>();
+                            final error = await authProvider.register(name, email, password);
+                            if (mounted) {
+                              setState(() => _isLoading = false);
+                              if (error == null) {
+                                context.go('/dashboard');
+                              } else {
+                                setState(() => _errorMessage = error);
+                              }
+                            }
                           },
                         ),
                         

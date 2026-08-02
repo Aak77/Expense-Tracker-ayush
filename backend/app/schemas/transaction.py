@@ -14,6 +14,7 @@ EXPENSE_CATEGORIES = [
     "health",
     "education",
     "travel",
+    "investment",
     "other",
 ]
 
@@ -109,3 +110,18 @@ class TransactionListResponse(BaseModel):
     page: int
     limit: int
     total_pages: int
+
+
+class TransactionParseResponse(BaseModel):
+    """Schema for a parsed CSV transaction row."""
+    transaction_date: date
+    description: Optional[str] = None
+    amount: Decimal
+    type: str
+    category: str
+
+
+class TransactionBulkCreate(BaseModel):
+    """Schema for creating transactions in bulk."""
+    transactions: List[TransactionCreate]
+

@@ -58,8 +58,8 @@ async def get_dashboard_data(
         select(func.coalesce(func.sum(Transaction.amount), 0)).where(
             Transaction.user_id == user_id,
             Transaction.type == "income",
-            Transaction.date >= first_day,
-            Transaction.date <= last_day,
+            Transaction.transaction_date >= first_day,
+            Transaction.transaction_date <= last_day,
         )
     )
     total_income = float(income_result.scalar())
@@ -68,8 +68,8 @@ async def get_dashboard_data(
         select(func.coalesce(func.sum(Transaction.amount), 0)).where(
             Transaction.user_id == user_id,
             Transaction.type == "expense",
-            Transaction.date >= first_day,
-            Transaction.date <= last_day,
+            Transaction.transaction_date >= first_day,
+            Transaction.transaction_date <= last_day,
         )
     )
     total_expenses = float(expense_result.scalar())
@@ -85,13 +85,31 @@ async def get_dashboard_data(
         .limit(1)
     )
     nw_snapshot = nw_result.scalar_one_or_none()
-    net_worth = float(nw_snapshot.net_worth) if nw_snapshot else 0.0
+
+    if nw_snapshot:
+        net_worth = float(nw_snapshot.net_worth)
+    else:
+        # Fallback: compute net worth as all-time income minus all-time expenses
+        all_income_result = await db.execute(
+            select(func.coalesce(func.sum(Transaction.amount), 0)).where(
+                Transaction.user_id == user_id,
+                Transaction.type == "income",
+            )
+        )
+        all_expense_result = await db.execute(
+            select(func.coalesce(func.sum(Transaction.amount), 0)).where(
+                Transaction.user_id == user_id,
+                Transaction.type == "expense",
+            )
+        )
+        net_worth = float(all_income_result.scalar()) - float(all_expense_result.scalar())
+        logger.info(f"Net worth fallback: {net_worth}")
 
     # ── Recent Transactions ───────────────────────────────────────────────
     txn_result = await db.execute(
         select(Transaction)
         .where(Transaction.user_id == user_id)
-        .order_by(desc(Transaction.date), desc(Transaction.created_at))
+        .order_by(desc(Transaction.transaction_date), desc(Transaction.created_at))
         .limit(5)
     )
     recent_transactions = [
@@ -101,7 +119,7 @@ async def get_dashboard_data(
             "category": t.category,
             "amount": float(t.amount),
             "description": t.description,
-            "date": t.date.isoformat() if t.date else None,
+            "date": t.transaction_date.isoformat() if t.transaction_date else None,
         }
         for t in txn_result.scalars().all()
     ]
@@ -114,18 +132,27 @@ async def get_dashboard_data(
 
     budget_alerts = []
     for b in budgets:
-        # Sum expenses for this budget's category in the current period
-        spent_result = await db.execute(
-            select(func.coalesce(func.sum(Transaction.amount), 0)).where(
-                Transaction.user_id == user_id,
-                Transaction.type == "expense",
-                Transaction.category == b.category,
-                Transaction.date >= first_day,
-                Transaction.date <= last_day,
+        if b.category.lower() == "global":
+            spent_result = await db.execute(
+                select(func.coalesce(func.sum(Transaction.amount), 0)).where(
+                    Transaction.user_id == user_id,
+                    Transaction.type == "expense",
+                    Transaction.transaction_date >= first_day,
+                    Transaction.transaction_date <= last_day,
+                )
             )
-        )
+        else:
+            spent_result = await db.execute(
+                select(func.coalesce(func.sum(Transaction.amount), 0)).where(
+                    Transaction.user_id == user_id,
+                    Transaction.type == "expense",
+                    Transaction.category == b.category,
+                    Transaction.transaction_date >= first_day,
+                    Transaction.transaction_date <= last_day,
+                )
+            )
         spent = float(spent_result.scalar())
-        limit_amount = float(b.amount)
+        limit_amount = float(b.monthly_limit)
 
         if limit_amount <= 0:
             continue
@@ -182,8 +209,8 @@ async def get_spending_by_category(
         .where(
             Transaction.user_id == user_id,
             Transaction.type == "expense",
-            Transaction.date >= first_day,
-            Transaction.date <= last_day,
+            Transaction.transaction_date >= first_day,
+            Transaction.transaction_date <= last_day,
         )
         .group_by(Transaction.category)
         .order_by(desc("total"))
@@ -224,14 +251,14 @@ async def get_monthly_trend(
 
     result = await db.execute(
         select(
-            extract("year", Transaction.date).label("yr"),
-            extract("month", Transaction.date).label("mo"),
+            extract("year", Transaction.transaction_date).label("yr"),
+            extract("month", Transaction.transaction_date).label("mo"),
             Transaction.type,
             func.sum(Transaction.amount).label("total"),
         )
         .where(
             Transaction.user_id == user_id,
-            Transaction.date >= start_date,
+            Transaction.transaction_date >= start_date,
         )
         .group_by("yr", "mo", Transaction.type)
         .order_by("yr", "mo")
@@ -287,8 +314,8 @@ async def get_category_comparison(
         .where(
             Transaction.user_id == user_id,
             Transaction.type == "expense",
-            Transaction.date >= first_day,
-            Transaction.date <= last_day,
+            Transaction.transaction_date >= first_day,
+            Transaction.transaction_date <= last_day,
         )
         .group_by(Transaction.category)
         .order_by(desc("total"))
@@ -311,22 +338,22 @@ async def get_daily_spending(
 
     result = await db.execute(
         select(
-            Transaction.date,
+            Transaction.transaction_date,
             func.sum(Transaction.amount).label("total"),
         )
         .where(
             Transaction.user_id == user_id,
             Transaction.type == "expense",
-            Transaction.date >= first_day,
-            Transaction.date <= last_day,
+            Transaction.transaction_date >= first_day,
+            Transaction.transaction_date <= last_day,
         )
-        .group_by(Transaction.date)
-        .order_by(Transaction.date)
+        .group_by(Transaction.transaction_date)
+        .order_by(Transaction.transaction_date)
     )
     rows = result.all()
 
     # Build a complete calendar so the chart has no gaps
-    spending_map = {r.date: float(r.total) for r in rows}
+    spending_map = {r.transaction_date: float(r.total) for r in rows}
     output: list[dict] = []
     current = first_day
     end = min(last_day, date.today())

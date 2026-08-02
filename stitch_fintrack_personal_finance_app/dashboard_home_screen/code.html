@@ -1,355 +1,421 @@
 <!DOCTYPE html>
-
-<html class="dark" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
-<title>FinTrack - Dashboard</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-                    "tertiary-fixed": "#dfe2f3",
-                    "surface-container-high": "#1c2b3c",
-                    "tertiary-container": "#8d90a0",
-                    "on-primary-fixed-variant": "#004492",
-                    "secondary-fixed": "#a7eeff",
-                    "outline": "#8c909e",
-                    "outline-variant": "#424753",
-                    "error-container": "#93000a",
-                    "on-secondary-fixed-variant": "#004e5b",
-                    "on-secondary-container": "#004b57",
-                    "primary-container": "#508ff8",
-                    "on-error": "#690005",
-                    "on-tertiary": "#2c303d",
-                    "surface-variant": "#273647",
-                    "on-surface": "#d4e4fa",
-                    "on-secondary": "#00363f",
-                    "tertiary-fixed-dim": "#c3c6d7",
-                    "surface-container-low": "#0d1c2d",
-                    "surface-tint": "#acc7ff",
-                    "secondary-container": "#00c2de",
-                    "on-surface-variant": "#c2c6d5",
-                    "on-primary": "#002f68",
-                    "on-primary-container": "#00285b",
-                    "surface-container-highest": "#273647",
-                    "surface-container": "#122131",
-                    "tertiary": "#c3c6d7",
-                    "primary": "#acc7ff",
-                    "surface-bright": "#2c3a4c",
-                    "primary-fixed": "#d7e2ff",
-                    "secondary-fixed-dim": "#3ad8f5",
-                    "on-secondary-fixed": "#001f25",
-                    "surface": "#051424",
-                    "inverse-on-surface": "#233143",
-                    "secondary": "#43defb",
-                    "inverse-surface": "#d4e4fa",
-                    "on-tertiary-fixed-variant": "#434654",
-                    "on-error-container": "#ffdad6",
-                    "on-background": "#d4e4fa",
-                    "on-tertiary-container": "#252936",
-                    "surface-dim": "#051424",
-                    "primary-fixed-dim": "#acc7ff",
-                    "surface-container-lowest": "#010f1f",
-                    "on-tertiary-fixed": "#171b28",
-                    "on-primary-fixed": "#001a40",
-                    "background": "#051424",
-                    "inverse-primary": "#005bbf",
-                    "error": "#ffb4ab"
-            },
-            "borderRadius": {
-                    "DEFAULT": "0.25rem",
-                    "lg": "0.5rem",
-                    "xl": "0.75rem",
-                    "full": "9999px"
-            },
-            "spacing": {
-                    "sm": "8px",
-                    "base": "4px",
-                    "xs": "4px",
-                    "container-padding": "20px",
-                    "md": "16px",
-                    "xl": "32px",
-                    "lg": "24px"
-            },
-            "fontFamily": {
-                    "body-md": ["Inter"],
-                    "headline-md": ["Inter"],
-                    "headline-lg-mobile": ["Inter"],
-                    "label-md": ["Inter"],
-                    "headline-lg": ["Inter"],
-                    "body-lg": ["Inter"],
-                    "label-sm": ["Inter"],
-                    "display-currency": ["Inter"]
-            },
-            "fontSize": {
-                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
-                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
-                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
-                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
-                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
-                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
-                    "display-currency": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
-            }
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+  <title>FinTrack - Dashboard</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: "#2563EB", // Vibrant cobalt blue primary
+            "brand-light": "#3B82F6",
+            income: "#10B981", // Strict emerald green for income
+            expense: "#EF4444", // Strict rose red for expenses
+            bgDark: "#030712", // Clean dark obsidian
           },
+          fontFamily: {
+            sans: ["Inter", "sans-serif"],
+          }
         },
-      }
-    </script>
-<style>
-        body {
-            background-color: #051424;
-            color: #d4e4fa;
-            font-family: 'Inter', sans-serif;
-            -webkit-font-smoothing: antialiased;
-        }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            position: relative;
-            overflow: hidden;
-        }
-        .glass-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            border: 1px solid transparent;
-            background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(79,142,247,0.05) 100%);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            pointer-events: none;
-        }
-        .progress-track { background: rgba(255, 255, 255, 0.05); }
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-            vertical-align: middle;
-        }
-        .glow-blue { box-shadow: 0 0 20px rgba(79, 142, 247, 0.3); }
-        ::-webkit-scrollbar { display: none; }
-    </style>
-<style>
+      },
+    }
+  </script>
+  <style>
+    body {
+      background-color: #030712;
+      color: #F9FAFB;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.02);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35);
+      border-radius: 16px;
+      padding: 24px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .glass-card:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.45);
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      vertical-align: middle;
+    }
+    ::-webkit-scrollbar { display: none; }
+  </style>
+  <style>
     body {
       min-height: max(884px, 100dvh);
     }
   </style>
 </head>
-<body class="bg-background text-on-background min-h-screen pb-32">
-<!-- Top App Bar -->
-<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-padding h-16 bg-surface/80 dark:bg-surface/80 backdrop-blur-xl border-b border-white/10">
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center border border-white/20 overflow-hidden">
-<img alt="User profile photo" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBInkQkegmDcgH6Ubu7z4AVjVzXozcvWt4ZyfE59IAnnN_IH5Ts65yJtQk9Tl8nFb4baY1Sbcd5zsWIbZ_j_wE0cQ-tylsshJ5Gzg_kdfo7FXLeeCP0CKvrm-hfIq1nRNU4Tmkqx44aOvQkFTSmfmTr8UzBmOIcAgd4Sl4mbuUHMwb71Yh0JEUKcQ1CZbV0Ta9cc50ZZLUsidanBoOEvJiaIMZM4AoKKTenNIdfYXllYAqvyVG6dHXU2NA5SXYfS893bhLAheGlQmb7"/>
-</div>
-<div class="flex flex-col">
-<span class="text-label-sm font-label-sm text-on-surface-variant">Good morning,</span>
-<span class="text-label-md font-label-md font-bold text-on-surface">Ayush 👋</span>
-</div>
-</div>
-<div class="text-headline-md font-headline-md font-bold text-primary dark:text-primary absolute left-1/2 -translate-x-1/2 hidden md:block">FinTrack</div>
-<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/5 transition-colors active:scale-95 duration-200">
-<span class="material-symbols-outlined text-primary" data-icon="notifications">notifications</span>
-</button>
-</header>
-<!-- Main Content Canvas -->
-<main class="pt-24 px-container-padding max-w-5xl mx-auto space-y-lg">
-<!-- Hero Net Worth Card -->
-<section class="glass-card rounded-xl p-lg relative group">
+<body class="bg-bgDark text-slate-100 min-h-screen pb-36 relative overflow-x-hidden">
+  
+  <!-- Background Nebula Glows -->
+  <div class="fixed top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-brand/20 rounded-full blur-[140px] pointer-events-none z-0"></div>
+  <div class="fixed top-[-100px] right-[-100px] w-[350px] h-[350px] bg-brand-light/10 rounded-full blur-[90px] pointer-events-none z-0"></div>
 
-<div class="relative z-10 flex flex-col gap-sm">
-<div class="flex justify-between items-start">
-<span class="text-label-md font-label-md text-on-surface-variant uppercase tracking-wider">Total Net Worth</span>
-<div class="flex items-center gap-1 text-secondary bg-secondary/10 px-2 py-1 rounded-full">
-<span class="material-symbols-outlined text-[16px]" data-icon="trending_up">trending_up</span>
-<span class="text-label-sm font-label-sm">8.2%</span>
-</div>
-</div>
-<h1 class="text-display-currency font-display-currency text-on-surface">₹2,45,000</h1>
-<div class="flex items-center gap-2 mt-2">
-<div class="h-1.5 flex-1 progress-track rounded-full overflow-hidden">
-<div class="h-full bg-gradient-to-r from-primary to-secondary w-[65%] rounded-full shadow-[0_0_10px_rgba(67,222,251,0.5)]"></div>
-</div>
-<span class="text-label-sm font-label-sm text-outline">65% of target</span>
-</div>
-</div>
-</section>
-<!-- Summary Grid -->
-<section class="grid grid-cols-1 md:grid-cols-3 gap-md">
-<!-- Income -->
-<div class="glass-card rounded-xl p-md flex items-center gap-md">
-<div class="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center border border-green-500/20">
-<span class="material-symbols-outlined text-green-500" data-icon="south_west">south_west</span>
-</div>
-<div class="flex flex-col">
-<span class="text-label-sm font-label-sm text-on-surface-variant">Monthly Income</span>
-<span class="text-headline-md font-headline-md text-green-400">₹35,000</span>
-</div>
-</div>
-<!-- Expenses -->
-<div class="glass-card rounded-xl p-md flex items-center gap-md">
-<div class="w-12 h-12 rounded-full bg-orange-500/10 flex items-center justify-center border border-orange-500/20">
-<span class="material-symbols-outlined text-orange-500" data-icon="north_east">north_east</span>
-</div>
-<div class="flex flex-col">
-<span class="text-label-sm font-label-sm text-on-surface-variant">Expenses</span>
-<span class="text-headline-md font-headline-md text-orange-400">₹18,400</span>
-</div>
-</div>
-<!-- Savings -->
-<div class="glass-card rounded-xl p-md flex items-center gap-md">
-<div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
-<span class="material-symbols-outlined text-primary" data-icon="account_balance_wallet">account_balance_wallet</span>
-</div>
-<div class="flex flex-col">
-<span class="text-label-sm font-label-sm text-on-surface-variant">Total Savings</span>
-<span class="text-headline-md font-headline-md text-primary">₹16,600</span>
-</div>
-</div>
-</section>
-<!-- Recent Transactions -->
-<section class="space-y-md pb-8">
-<div class="flex justify-between items-center">
-<h2 class="text-headline-md font-headline-md text-on-surface">Recent Transactions</h2>
-<button class="text-primary text-label-md font-label-md hover:underline">See All</button>
-</div>
-<div class="space-y-sm">
-<!-- Transaction Item 1 -->
-<div class="glass-card rounded-xl p-md flex justify-between items-center group hover:bg-white/5 transition-all cursor-pointer">
-<div class="flex items-center gap-md">
-<div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center">
-<span class="material-symbols-outlined text-on-surface-variant" data-icon="restaurant">restaurant</span>
-</div>
-<div class="flex flex-col">
-<span class="text-body-md font-body-md text-on-surface">Starbucks Coffee</span>
-<span class="text-label-sm font-label-sm text-outline">Today, 09:45 AM</span>
-</div>
-</div>
-<div class="flex flex-col items-end">
-<span class="text-headline-md font-headline-md text-on-surface">-₹450</span>
-<span class="text-label-sm font-label-sm text-outline-variant">Food &amp; Drinks</span>
-</div>
-</div>
-<!-- Transaction Item 2 -->
-<div class="glass-card rounded-xl p-md flex justify-between items-center group hover:bg-white/5 transition-all cursor-pointer">
-<div class="flex items-center gap-md">
-<div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center">
-<span class="material-symbols-outlined text-on-surface-variant" data-icon="shopping_bag">shopping_bag</span>
-</div>
-<div class="flex flex-col">
-<span class="text-body-md font-body-md text-on-surface">Zara Fashion</span>
-<span class="text-label-sm font-label-sm text-outline">Yesterday, 06:20 PM</span>
-</div>
-</div>
-<div class="flex flex-col items-end">
-<span class="text-headline-md font-headline-md text-on-surface">-₹3,200</span>
-<span class="text-label-sm font-label-sm text-outline-variant">Shopping</span>
-</div>
-</div>
-<!-- Transaction Item 3 -->
-<div class="glass-card rounded-xl p-md flex justify-between items-center group hover:bg-white/5 transition-all cursor-pointer">
-<div class="flex items-center gap-md">
-<div class="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
-<span class="material-symbols-outlined text-green-400" data-icon="work">work</span>
-</div>
-<div class="flex flex-col">
-<span class="text-body-md font-body-md text-on-surface">Salary Deposit</span>
-<span class="text-label-sm font-label-sm text-outline">01 Oct, 10:00 AM</span>
-</div>
-</div>
-<div class="flex flex-col items-end">
-<span class="text-headline-md font-headline-md text-green-400">+₹35,000</span>
-<span class="text-label-sm font-label-sm text-outline-variant">Income</span>
-</div>
-</div>
-<!-- Transaction Item 4 -->
-<div class="glass-card rounded-xl p-md flex justify-between items-center group hover:bg-white/5 transition-all cursor-pointer">
-<div class="flex items-center gap-md">
-<div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center">
-<span class="material-symbols-outlined text-on-surface-variant" data-icon="home_repair_service">home_repair_service</span>
-</div>
-<div class="flex flex-col">
-<span class="text-body-md font-body-md text-on-surface">Monthly Rent</span>
-<span class="text-label-sm font-label-sm text-outline">01 Oct, 08:30 AM</span>
-</div>
-</div>
-<div class="flex flex-col items-end">
-<span class="text-headline-md font-headline-md text-on-surface">-₹12,000</span>
-<span class="text-label-sm font-label-sm text-outline-variant">Housing</span>
-</div>
-</div>
-<!-- Transaction Item 5 -->
-<div class="glass-card rounded-xl p-md flex justify-between items-center group hover:bg-white/5 transition-all cursor-pointer">
-<div class="flex items-center gap-md">
-<div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center">
-<span class="material-symbols-outlined text-on-surface-variant" data-icon="directions_car">directions_car</span>
-</div>
-<div class="flex flex-col">
-<span class="text-body-md font-body-md text-on-surface">Petrol Refill</span>
-<span class="text-label-sm font-label-sm text-outline">30 Sep, 11:15 PM</span>
-</div>
-</div>
-<div class="flex flex-col items-end">
-<span class="text-headline-md font-headline-md text-on-surface">-₹2,500</span>
-<span class="text-label-sm font-label-sm text-outline-variant">Transport</span>
-</div>
-</div>
-</div>
-</section>
-</main>
-<!-- Floating Action Button -->
-<button class="fixed right-6 bottom-24 w-14 h-14 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center shadow-lg active:scale-95 transition-transform z-40 glow-blue">
-<span class="material-symbols-outlined text-[32px]" data-icon="add">add</span>
-</button>
-<!-- Bottom Navigation Bar -->
-<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pt-3 pb-safe bg-surface/80 dark:bg-surface/80 backdrop-blur-2xl border-t border-white/10">
-<!-- Home (Active) -->
-<a class="flex flex-col items-center justify-center text-secondary dark:text-secondary active:scale-110 duration-300 transition-transform" href="#">
-<span class="material-symbols-outlined" data-icon="home" style="font-variation-settings: 'FILL' 1;">home</span>
-<span class="text-label-sm font-label-sm">Home</span>
-</a>
-<!-- Activity -->
-<a class="flex flex-col items-center justify-center text-outline dark:text-outline hover:text-primary-container" href="#">
-<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
-<span class="text-label-sm font-label-sm">Activity</span>
-</a>
-<!-- Budget -->
-<a class="flex flex-col items-center justify-center text-outline dark:text-outline hover:text-primary-container" href="#">
-<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
-<span class="text-label-sm font-label-sm">Budget</span>
-</a>
-<!-- Goals -->
-<a class="flex flex-col items-center justify-center text-outline dark:text-outline hover:text-primary-container" href="#">
-<span class="material-symbols-outlined" data-icon="ads_click">ads_click</span>
-<span class="text-label-sm font-label-sm">Goals</span>
-</a>
-<!-- Profile -->
-<a class="flex flex-col items-center justify-center text-outline dark:text-outline hover:text-primary-container" href="#">
-<span class="material-symbols-outlined" data-icon="person">person</span>
-<span class="text-label-sm font-label-sm">Profile</span>
-</a>
-</nav>
-<script>
-        // Simple interaction for transaction items
-        document.querySelectorAll('.glass-card.cursor-pointer').forEach(item => {
-            item.addEventListener('mousedown', () => {
-                item.style.transform = 'scale(0.98)';
-            });
-            item.addEventListener('mouseup', () => {
-                item.style.transform = 'scale(1)';
-            });
-            item.addEventListener('mouseleave', () => {
-                item.style.transform = 'scale(1)';
-            });
-        });
-    </script>
-</body></html>
+  <!-- Top App Bar -->
+  <header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-[#030712]/40 backdrop-blur-xl border-b border-white/5">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10 overflow-hidden">
+        <img alt="User profile photo" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBInkQkegmDcgH6Ubu7z4AVjVzXozcvWt4ZyfE59IAnnN_IH5Ts65yJtQk9Tl8nFb4baY1Sbcd5zsWIbZ_j_wE0cQ-tylsshJ5Gzg_kdfo7FXLeeCP0CKvrm-hfIq1nRNU4Tmkqx44aOvQkFTSmfmTr8UzBmOIcAgd4Sl4mbuUHMwb71Yh0JEUKcQ1CZbV0Ta9cc50ZZLUsidanBoOEvJiaIMZM4AoKKTenNIdfYXllYAqvyVG6dHXU2NA5SXYfS893bhLAheGlQmb7"/>
+      </div>
+      <div class="flex flex-col">
+        <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Hello</span>
+        <span class="text-sm font-bold text-white">Ayush 👋</span>
+      </div>
+    </div>
+    <div class="text-base font-bold text-white tracking-wider absolute left-1/2 -translate-x-1/2 hidden md:block">FinTrack</div>
+    
+    <div class="flex items-center gap-2">
+      <button class="w-10 h-10 flex items-center justify-center rounded-full bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.08] active:scale-95 transition-all text-slate-300">
+        <span class="material-symbols-outlined text-[20px]" data-icon="search">search</span>
+      </button>
+      <button class="w-10 h-10 flex items-center justify-center rounded-full bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.08] active:scale-95 transition-all text-slate-300">
+        <span class="material-symbols-outlined text-[20px]" data-icon="notifications">notifications</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content Canvas -->
+  <main class="pt-24 px-6 max-w-lg mx-auto space-y-6 relative z-10">
+    
+    <!-- Hero Net Worth Card -->
+    <section class="glass-card">
+      <div class="flex flex-col gap-4">
+        <div class="flex justify-between items-start">
+          <span class="text-xs font-semibold text-slate-400 tracking-wider uppercase">Total Balance</span>
+          <div class="flex items-center gap-1.5 text-income bg-income/10 px-2.5 py-1 rounded-full text-xs font-medium border border-income/10">
+            <span class="material-symbols-outlined text-[14px]" data-icon="trending_up">trending_up</span>
+            <span>+8.2%</span>
+          </div>
+        </div>
+        
+        <div class="flex flex-col gap-1">
+          <h1 class="text-4xl md:text-5xl font-extrabold text-white tracking-tight tabular-nums">₹2,45,000</h1>
+          <p class="text-xs text-slate-400 font-medium mt-1">₹18,500 (+8.2%) | Last Month</p>
+        </div>
+        
+        <div class="flex flex-col gap-2 mt-2">
+          <div class="flex justify-between text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+            <span>Goal Progress</span>
+            <span class="text-brand-light">65% of target</span>
+          </div>
+          <div class="h-2 w-full bg-slate-800/80 rounded-full overflow-hidden border border-white/5">
+            <div class="h-full bg-brand rounded-full shadow-[0_0_8px_rgba(37,99,235,0.5)]" style="width: 65%"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Action Grid -->
+    <section class="grid grid-cols-4 gap-2 py-2">
+      <!-- Send -->
+      <div class="flex flex-col items-center gap-2 cursor-pointer group">
+        <div class="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.08] hover:border-white/[0.15] active:scale-95 transition-all flex items-center justify-center text-white shadow-lg">
+          <span class="material-symbols-outlined text-[24px]">arrow_outward</span>
+        </div>
+        <span class="text-xs font-semibold text-slate-400 group-hover:text-white transition-colors">Send</span>
+      </div>
+      <!-- Add Funds -->
+      <div class="flex flex-col items-center gap-2 cursor-pointer group">
+        <div class="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.08] hover:border-white/[0.15] active:scale-95 transition-all flex items-center justify-center text-white shadow-lg">
+          <span class="material-symbols-outlined text-[24px]">add</span>
+        </div>
+        <span class="text-xs font-semibold text-slate-400 group-hover:text-white transition-colors">Add Funds</span>
+      </div>
+      <!-- Scan & Pay -->
+      <div class="flex flex-col items-center gap-2 cursor-pointer group">
+        <div class="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.08] hover:border-white/[0.15] active:scale-95 transition-all flex items-center justify-center text-white shadow-lg">
+          <span class="material-symbols-outlined text-[24px]">qr_code_scanner</span>
+        </div>
+        <span class="text-xs font-semibold text-slate-400 group-hover:text-white transition-colors">Scan & Pay</span>
+      </div>
+      <!-- Withdraw -->
+      <div class="flex flex-col items-center gap-2 cursor-pointer group">
+        <div class="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.08] hover:border-white/[0.15] active:scale-95 transition-all flex items-center justify-center text-white shadow-lg">
+          <span class="material-symbols-outlined text-[24px]">south</span>
+        </div>
+        <span class="text-xs font-semibold text-slate-400 group-hover:text-white transition-colors">Withdraw</span>
+      </div>
+    </section>
+
+    <!-- Summary Stats Cards -->
+    <section class="grid grid-cols-3 gap-3">
+      <!-- Income -->
+      <div class="glass-card !p-4 flex flex-col gap-2">
+        <div class="w-8 h-8 rounded-xl bg-income/10 border border-income/20 flex items-center justify-center text-income">
+          <span class="material-symbols-outlined text-[18px]">south_west</span>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-[9px] font-semibold text-slate-400 uppercase tracking-wider">Income</span>
+          <span class="text-sm font-extrabold text-income tabular-nums mt-0.5">₹35,000</span>
+        </div>
+      </div>
+      <!-- Expenses -->
+      <div class="glass-card !p-4 flex flex-col gap-2">
+        <div class="w-8 h-8 rounded-xl bg-expense/10 border border-expense/20 flex items-center justify-center text-expense">
+          <span class="material-symbols-outlined text-[18px]">north_east</span>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-[9px] font-semibold text-slate-400 uppercase tracking-wider">Expenses</span>
+          <span class="text-sm font-extrabold text-expense tabular-nums mt-0.5">₹18,400</span>
+        </div>
+      </div>
+      <!-- Savings -->
+      <div class="glass-card !p-4 flex flex-col gap-2">
+        <div class="w-8 h-8 rounded-xl bg-brand/10 border border-brand/20 flex items-center justify-center text-brand-light">
+          <span class="material-symbols-outlined text-[18px]">account_balance_wallet</span>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-[9px] font-semibold text-slate-400 uppercase tracking-wider">Savings</span>
+          <span class="text-sm font-extrabold text-brand-light tabular-nums mt-0.5">₹16,600</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Category Spending Chart -->
+    <section class="glass-card space-y-6">
+      <div class="flex justify-between items-center">
+        <div>
+          <h2 class="text-base font-bold text-white tracking-wide">Category Spending</h2>
+          <p class="text-xs text-slate-400 mt-0.5">Monthly breakdown of expense distributions</p>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-6 items-center">
+        <!-- SVG Donut Chart -->
+        <div class="flex justify-center relative">
+          <div class="relative w-36 h-36">
+            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+              <circle cx="18" cy="18" r="15.915" fill="transparent" stroke="rgba(255, 255, 255, 0.03)" stroke-width="3"></circle>
+              <!-- Housing: 65.2% -->
+              <circle cx="18" cy="18" r="15.915" fill="transparent" stroke="#EF4444" stroke-width="3.2" stroke-dasharray="65.2 100" stroke-dashoffset="0"></circle>
+              <!-- Shopping: 17.4% -->
+              <circle cx="18" cy="18" r="15.915" fill="transparent" stroke="#F43F5E" stroke-width="3.2" stroke-dasharray="17.4 100" stroke-dashoffset="-65.2"></circle>
+              <!-- Transport: 13.6% -->
+              <circle cx="18" cy="18" r="15.915" fill="transparent" stroke="#FB7185" stroke-width="3.2" stroke-dasharray="13.6 100" stroke-dashoffset="-82.6"></circle>
+              <!-- Food & Drinks: 2.4% -->
+              <circle cx="18" cy="18" r="15.915" fill="transparent" stroke="#FCA5A5" stroke-width="3.2" stroke-dasharray="2.4 100" stroke-dashoffset="-96.2"></circle>
+              <!-- Other: 1.4% -->
+              <circle cx="18" cy="18" r="15.915" fill="transparent" stroke="#94A3B8" stroke-width="3.2" stroke-dasharray="1.4 100" stroke-dashoffset="-98.6"></circle>
+            </svg>
+            <div class="absolute inset-0 flex flex-col items-center justify-center">
+              <span class="text-[10px] font-semibold text-slate-400 tracking-wider uppercase">Expenses</span>
+              <span class="text-base font-extrabold text-white mt-0.5 tabular-nums">₹18,400</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chart Legend -->
+        <div class="w-full space-y-2.5">
+          <!-- Housing -->
+          <div class="flex items-center justify-between border-b border-white/5 pb-2">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#EF4444]"></span>
+              <span class="text-sm font-medium text-slate-300">Housing</span>
+            </div>
+            <div class="text-right">
+              <span class="text-sm font-bold text-white tabular-nums">₹12,000</span>
+              <span class="text-xs text-slate-400 ml-2 tabular-nums">65.2%</span>
+            </div>
+          </div>
+          <!-- Shopping -->
+          <div class="flex items-center justify-between border-b border-white/5 pb-2">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#F43F5E]"></span>
+              <span class="text-sm font-medium text-slate-300">Shopping</span>
+            </div>
+            <div class="text-right">
+              <span class="text-sm font-bold text-white tabular-nums">₹3,200</span>
+              <span class="text-xs text-slate-400 ml-2 tabular-nums">17.4%</span>
+            </div>
+          </div>
+          <!-- Transport -->
+          <div class="flex items-center justify-between border-b border-white/5 pb-2">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#FB7185]"></span>
+              <span class="text-sm font-medium text-slate-300">Transport</span>
+            </div>
+            <div class="text-right">
+              <span class="text-sm font-bold text-white tabular-nums">₹2,500</span>
+              <span class="text-xs text-slate-400 ml-2 tabular-nums">13.6%</span>
+            </div>
+          </div>
+          <!-- Food & Drinks -->
+          <div class="flex items-center justify-between border-b border-white/5 pb-2">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#FCA5A5]"></span>
+              <span class="text-sm font-medium text-slate-300">Food & Drinks</span>
+            </div>
+            <div class="text-right">
+              <span class="text-sm font-bold text-white tabular-nums">₹450</span>
+              <span class="text-xs text-slate-400 ml-2 tabular-nums">2.4%</span>
+            </div>
+          </div>
+          <!-- Other -->
+          <div class="flex items-center justify-between pb-1">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>
+              <span class="text-sm font-medium text-slate-300">Other</span>
+            </div>
+            <div class="text-right">
+              <span class="text-sm font-bold text-white tabular-nums">₹250</span>
+              <span class="text-xs text-slate-400 ml-2 tabular-nums">1.4%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Recent Transactions -->
+    <section class="space-y-3 pb-8">
+      <div class="flex justify-between items-center px-1">
+        <h2 class="text-base font-bold text-white tracking-wide">Latest Transaction</h2>
+        <button class="text-xs font-semibold text-brand-light hover:text-white transition-colors active:scale-95 duration-200">View All</button>
+      </div>
+
+      <!-- Transaction Cards Stack -->
+      <div class="space-y-3">
+        <!-- Item 1: Starbucks -->
+        <div class="glass-card !p-4 flex justify-between items-center hover:bg-white/[0.04] transition-all cursor-pointer">
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-center text-slate-300">
+              <span class="material-symbols-outlined text-[20px]">restaurant</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-sm font-bold text-white">Starbucks Coffee</span>
+              <span class="text-[11px] text-slate-400 mt-0.5">Today • 09:45 AM</span>
+            </div>
+          </div>
+          <div class="flex flex-col items-end">
+            <span class="text-sm font-extrabold text-expense tabular-nums">-₹450</span>
+            <span class="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mt-0.5">Food &amp; Drinks</span>
+          </div>
+        </div>
+
+        <!-- Item 2: Zara -->
+        <div class="glass-card !p-4 flex justify-between items-center hover:bg-white/[0.04] transition-all cursor-pointer">
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-center text-slate-300">
+              <span class="material-symbols-outlined text-[20px]">shopping_bag</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-sm font-bold text-white">Zara Fashion</span>
+              <span class="text-[11px] text-slate-400 mt-0.5">Yesterday • 06:20 PM</span>
+            </div>
+          </div>
+          <div class="flex flex-col items-end">
+            <span class="text-sm font-extrabold text-expense tabular-nums">-₹3,200</span>
+            <span class="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mt-0.5">Shopping</span>
+          </div>
+        </div>
+
+        <!-- Item 3: Salary -->
+        <div class="glass-card !p-4 flex justify-between items-center hover:bg-white/[0.04] transition-all cursor-pointer">
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-center text-slate-300">
+              <span class="material-symbols-outlined text-[20px]">work</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-sm font-bold text-white">Salary Deposit</span>
+              <span class="text-[11px] text-slate-400 mt-0.5">01 Oct • 10:00 AM</span>
+            </div>
+          </div>
+          <div class="flex flex-col items-end">
+            <span class="text-sm font-extrabold text-income tabular-nums">+₹35,000</span>
+            <span class="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mt-0.5">Income</span>
+          </div>
+        </div>
+
+        <!-- Item 4: Rent -->
+        <div class="glass-card !p-4 flex justify-between items-center hover:bg-white/[0.04] transition-all cursor-pointer">
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-center text-slate-300">
+              <span class="material-symbols-outlined text-[20px]">home</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-sm font-bold text-white">Monthly Rent</span>
+              <span class="text-[11px] text-slate-400 mt-0.5">01 Oct • 08:30 AM</span>
+            </div>
+          </div>
+          <div class="flex flex-col items-end">
+            <span class="text-sm font-extrabold text-expense tabular-nums">-₹12,000</span>
+            <span class="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mt-0.5">Housing</span>
+          </div>
+        </div>
+
+        <!-- Item 5: Petrol -->
+        <div class="glass-card !p-4 flex justify-between items-center hover:bg-white/[0.04] transition-all cursor-pointer">
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-center text-slate-300">
+              <span class="material-symbols-outlined text-[20px]">directions_car</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-sm font-bold text-white">Petrol Refill</span>
+              <span class="text-[11px] text-slate-400 mt-0.5">30 Sep • 11:15 PM</span>
+            </div>
+          </div>
+          <div class="flex flex-col items-end">
+            <span class="text-sm font-extrabold text-expense tabular-nums">-₹2,500</span>
+            <span class="text-[9px] font-semibold text-slate-500 uppercase tracking-wider mt-0.5">Transport</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Bottom Navigation Bar with Integrated Scan FAB -->
+  <nav class="fixed bottom-4 left-6 right-6 z-50 flex justify-between items-center pl-6 pr-3 py-2 bg-[#030712]/70 backdrop-blur-2xl border border-white/[0.06] rounded-[24px] shadow-[0_12px_40px_rgba(0,0,0,0.6)]">
+    <div class="flex items-center justify-between w-full pr-4">
+      <!-- Home (Active) -->
+      <a class="flex items-center justify-center text-brand-light" href="#">
+        <span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">home</span>
+      </a>
+      <!-- History -->
+      <a class="flex items-center justify-center text-slate-400 hover:text-white transition-colors" href="#">
+        <span class="material-symbols-outlined text-[24px]">history</span>
+      </a>
+      <!-- Budget -->
+      <a class="flex items-center justify-center text-slate-400 hover:text-white transition-colors" href="#">
+        <span class="material-symbols-outlined text-[24px]">credit_card</span>
+      </a>
+      <!-- Profile -->
+      <a class="flex items-center justify-center text-slate-400 hover:text-white transition-colors" href="#">
+        <span class="material-symbols-outlined text-[24px]">person</span>
+      </a>
+    </div>
+    <!-- Scanner FAB inside Nav -->
+    <button class="w-12 h-12 rounded-full bg-brand flex items-center justify-center text-white hover:bg-brand-light active:scale-95 transition-all shadow-[0_4px_16px_rgba(37,99,235,0.4)] flex-shrink-0">
+      <span class="material-symbols-outlined text-[22px]">qr_code_scanner</span>
+    </button>
+  </nav>
+
+  <script>
+    // Simple interaction for cards
+    document.querySelectorAll('.glass-card, .rounded-2xl').forEach(item => {
+      item.addEventListener('mousedown', () => {
+        item.style.transform = 'scale(0.985)';
+      });
+      item.addEventListener('mouseup', () => {
+        item.style.transform = 'scale(1)';
+      });
+      item.addEventListener('mouseleave', () => {
+        item.style.transform = 'scale(1)';
+      });
+    });
+  </script>
+</body>
+</html>
