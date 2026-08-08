@@ -4,26 +4,18 @@
 
 /* =============================================
    FinTrack Design System — Global Styles
-   Glassmorphism Dark Theme
+   Dual Theme Support (Dark / Light)
    ============================================= */
-
-body {
-  background-color: #051424;
-  color: #d4e4fa;
-  font-family: 'Inter', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-tap-highlight-color: transparent;
-}
 
 /* Glass Card — Level 1 Surface */
 .glass-card {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--bg-card);
+  backdrop-filter: blur(var(--glass-blur, 16px));
+  -webkit-backdrop-filter: blur(var(--glass-blur, 16px));
+  border: 1px solid var(--border-subtle);
   position: relative;
   overflow: hidden;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .glass-card::before {
@@ -32,7 +24,7 @@ body {
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(79, 142, 247, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(79, 142, 247, 0.03) 100%);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
@@ -40,18 +32,27 @@ body {
   pointer-events: none;
 }
 
+[data-theme="light"] .glass-card::before {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.03) 0%, rgba(37, 99, 235, 0.02) 100%);
+}
+
 /* Glass Card Small — for secondary surfaces */
 .glass-card-sm {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-card);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-subtle);
 }
 
 /* Primary Button */
 .primary-button {
-  background-color: #4F8EF7;
+  background-color: var(--accent-brand);
+  color: white;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.primary-button:hover {
+  background-color: var(--accent-brand-light);
 }
 
 .primary-button:active {
@@ -65,27 +66,27 @@ body {
 
 /* Input Glass Fields */
 .input-glass {
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
   transition: all 0.3s ease;
 }
 
 .input-glass:focus {
-  border-color: #508ff8;
-  background: rgba(0, 0, 0, 0.4);
+  border-color: var(--accent-brand);
   outline: none;
-  box-shadow: 0 0 0 2px rgba(80, 143, 248, 0.2);
+  box-shadow: 0 0 0 2px var(--accent-brand-glow);
 }
 
 /* Input Field Focus */
 .input-field:focus-within {
-  border-color: #4F8EF7;
-  box-shadow: 0 0 0 1px #4F8EF7;
+  border-color: var(--accent-brand);
+  box-shadow: 0 0 0 1px var(--accent-brand);
 }
 
 /* Progress Bars */
 .progress-track {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--border-subtle);
   height: 8px;
   border-radius: 999px;
   overflow: hidden;
@@ -99,25 +100,25 @@ body {
 
 /* Gradient Progress */
 .gradient-progress {
-  background: linear-gradient(90deg, #acc7ff 0%, #43defb 100%);
+  background: var(--gradient-primary);
 }
 
 /* Glow Effects */
 .glow-blue {
-  box-shadow: 0 0 20px rgba(79, 142, 247, 0.3);
+  box-shadow: 0 0 20px var(--accent-brand-glow);
 }
 
 .fab-glow {
-  box-shadow: 0 0 20px rgba(79, 142, 247, 0.4);
+  box-shadow: var(--shadow-fab);
 }
 
 .active-pill-shadow {
-  box-shadow: 0 0 15px rgba(79, 142, 247, 0.4);
+  box-shadow: 0 0 15px var(--accent-brand-glow);
 }
 
 /* Navigation Active Glow */
 .nav-active-glow {
-  text-shadow: 0 0 12px rgba(67, 222, 251, 0.6);
+  text-shadow: 0 0 12px var(--accent-brand-glow);
 }
 
 /* Material Symbols defaults */
@@ -142,7 +143,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--border-medium);
   border-radius: 10px;
 }
 
@@ -205,13 +206,13 @@ body {
 
 /* Background mesh gradient */
 .bg-gradient-mesh {
-  background: radial-gradient(circle at 10% 20%, rgba(79, 142, 247, 0.08) 0%, transparent 40%),
+  background: radial-gradient(circle at 10% 20%, var(--accent-brand-glow) 0%, transparent 40%),
               radial-gradient(circle at 90% 80%, rgba(67, 222, 251, 0.05) 0%, transparent 40%);
 }
 
 /* Animate gradient background */
 .animate-gradient {
-  background: radial-gradient(circle at 50% 50%, #0d1c2d 0%, #051424 100%);
+  background: var(--bg-secondary);
   position: relative;
 }
 
@@ -220,7 +221,7 @@ body {
   position: absolute;
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(79, 142, 247, 0.15) 0%, rgba(147, 51, 234, 0.1) 40%, transparent 70%);
+  background: radial-gradient(circle, var(--accent-brand-glow) 0%, rgba(147, 51, 234, 0.1) 40%, transparent 70%);
   filter: blur(60px);
   z-index: 0;
   animation: drift 20s infinite alternate ease-in-out;
@@ -237,12 +238,15 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
-/* Date input dark scheme */
-input[type="date"] {
+/* Date input scheme */
+[data-theme="dark"] input[type="date"] {
   color-scheme: dark;
+}
+[data-theme="light"] input[type="date"] {
+  color-scheme: light;
 }
 
 /* Selection styling */
 ::selection {
-  background: rgba(80, 143, 248, 0.3);
+  background: var(--accent-brand-glow);
 }
